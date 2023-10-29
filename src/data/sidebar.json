@@ -1,0 +1,38 @@
+[
+  {
+    "name": "首页",
+    "path": "/",
+    "iconpath": "Home.png",
+    "selectpath": "HomeActive.png"
+  },
+  {
+    "name": "排行榜",
+    "path": "/ranking",
+    "iconpath": "Ranking.png",
+    "selectpath": "RankingActive.png"
+  },
+  {
+    "name": "歌单",
+    "path": "/songmap",
+    "iconpath": "MusicMap.png",
+    "selectpath": "MusicMapActive.png"
+  },
+  {
+    "name": "MV",
+    "path": "/mv",
+    "iconpath": "Mv.png",
+    "selectpath": "MvActive.png"
+  },
+  {
+    "name": "歌手",
+    "path": "/songpersong",
+    "iconpath": "SongPersong.png",
+    "selectpath": "SongPersongActive.png"
+  },
+  {
+    "name": "我的音乐",
+    "path": "/mymusic",
+    "iconpath": "MyMusic.png",
+    "selectpath": "MyMusicActive.png"
+  }
+]
