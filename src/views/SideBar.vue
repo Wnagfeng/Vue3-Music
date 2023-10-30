@@ -51,10 +51,10 @@ const handelNavBarclick = (index: number, item: ItemType) => {
   align-items: center;
   flex-direction: column;
   .top {
-    margin-top: 4.375rem;
+    margin-top: 70px;
     .logobox {
-      width: 5rem;
-      height: 5rem;
+      width: 80px;
+      height: 80px;
       img {
         width: 100%;
         height: 100%;
@@ -63,20 +63,20 @@ const handelNavBarclick = (index: number, item: ItemType) => {
   }
   .NavLink {
     width: 80%;
-    margin-top: 3.125rem;
+    margin-top: 50px;
     .nav {
-      border-radius: 1.25rem;
-      margin-right: 1.875rem;
-      height: 3.125rem;
+      border-radius: 30px;
+      margin-right: 30px;
+      height: 50px;
       cursor: pointer;
-      margin-top: 1.25rem;
+      margin-top: 20px;
       width: 100%;
       display: flex;
       align-items: center;
       .icon {
-        margin-left: 1.25rem;
-        width: 1.875rem;
-        height: 1.875rem;
+        margin-left: 20px;
+        width: 30px;
+        height: 30px;
         // margin-right: 20px;
         img {
           width: 100%;
@@ -84,15 +84,15 @@ const handelNavBarclick = (index: number, item: ItemType) => {
         }
       }
       .name {
-        margin-top: .375rem;
-        margin-left: 1.25rem;
+        margin-top: 6px;
+        margin-left: 20px;
       }
     }
   }
   .Navactive {
     font-weight: 400;
     background-color: #fff;
-    box-shadow: 0 1.25rem 1.6875rem #0000000d;
+    box-shadow: 10px 10px #0000000d;
   }
 }
 </style>

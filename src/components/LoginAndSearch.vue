@@ -15,19 +15,22 @@
       </div>
     </div>
   </div>
-  <template v-if="isShowLoginBox">
+  <template v-if="LoginStore.isShowLoginState">
     <LoginVue></LoginVue>
   </template>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Search } from '@element-plus/icons-vue';
+import { useLoginstore } from '@/stores/LoginStore';
 import LoginVue from '../views/Login.vue';
 const SearchValue = ref('');
-const isShowLoginBox = ref(false);
+const LoginStore = useLoginstore();
 const handelLoginClick = () => {
-  isShowLoginBox.value = !isShowLoginBox.value;
-  // 改变展示状态
+  LoginStore.changeIsloginState();
+};
+const handelcloseclick = () => {
+  console.log('点击了');
 };
 </script>
 <style scoped lang="less">

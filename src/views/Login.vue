@@ -1,50 +1,165 @@
 <template>
   <div class="LoginWrapper">
-    <el-form
-      ref="formRef"
-      :model="LoginForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
-      <el-form-item
-        label="age"
-        prop="age"
-        :rules="[
-          { required: true, message: 'age is required' },
-          { type: 'number', message: 'age must be a number' },
-        ]"
-      >
-        <el-input
-          v-model.number="LoginForm.age"
-          type="text"
-          autocomplete="off"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm(formRef)"
-          >Submit</el-button
-        >
-        <el-button @click="resetForm(formRef)">Reset</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="container">
+      <div class="close" @click="handelcloseclick">
+        <img src="../assets/img/close.png" alt="" />
+      </div>
+      <div class="logo">
+        <img src="../assets/img/logo.png" alt="" />
+      </div>
+      <h2>用户登录</h2>
+      <form>
+        <label for="email" class="infoemal">网易云账号：</label>
+        <input type="email" id="email" name="email" required />
+        <label for="password">密码：</label>
+        <input type="password" id="password" name="password" required />
+        <input type="submit" value="登录" />
+      </form>
+    </div>
   </div>
 </template>
 <script setup>
 import { reactive } from 'vue';
+import { useLoginstore } from '@/stores/LoginStore';
+const LoginStore = useLoginstore();
 const LoginForm = reactive({});
+const handelcloseclick = () => {
+  LoginStore.changeIsloginState();
+};
 </script>
 <style scoped lang="less">
+.infoemal {
+  margin-left: 10px;
+}
 .LoginWrapper {
-  width: 18.75rem;
-  height: 18.75rem;
+  z-index: 9999;
+  width: 500px;
+  height:500px;
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 38%;
+  // transform: translateX(-38%);
   top: 50%;
   transform: translateY(-50%);
-  background-color: #fff;
+  // background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
+  // background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+.container {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 5px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+  height: 500px;
+  // margin: 50px auto;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.logo {
+  // background-color: #333;
+  border-radius: 50%;
+  color: #fff;
+  font-size:40px;
+  height: 80px;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.logo span {
+  display: inline-block;
+  transform: rotate(-15deg);
+}
+
+h2 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70%;
+  margin-bottom: 20px
+  ;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #333;
+}
+
+input[type='email'],
+input[type='password'] {
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.4);
+  font-size: 16px;
+  height: 40px;
+  padding: 5px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+input[type='submit'] {
+  background-color: #333;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  padding: 10px 40px;
+  transition: background-color 0.3s ease;
+}
+
+input[type='submit']:hover {
+  background-color: #fff;
+  color: #333;
+}
+.close {
+  position: absolute;
+  cursor: pointer;
+  top: 20px;
+  right:20px;
+  width: 30px;
+  height: 30px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
