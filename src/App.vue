@@ -15,7 +15,6 @@
 <script setup lang="ts">
 import SideBar from './views/SideBar.vue';
 import LoginAndSearchVue from './components/LoginAndSearch.vue';
-import UserScalePage from '../src/Hooks/UserScalePage.js';
 // let opstion = {
 //   targetX: 1920,
 //   targetY: 1080,

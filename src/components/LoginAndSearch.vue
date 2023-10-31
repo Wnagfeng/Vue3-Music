@@ -36,15 +36,15 @@ const handelcloseclick = () => {
 <style scoped lang="less">
 :deep(.is-focus) {
   border: none;
-  box-shadow: 0 0 0 0.0625rem black;
+  box-shadow: 0 0 0 1px black;
 }
 .LoginAdnSearchwrapper {
-  padding-left: 0.9375rem;
-  padding-right: 0.9375rem;
+  padding-left: 15px;
+  padding-right: 15px;
   box-sizing: border-box;
   width: 100%;
   background-color: #fff;
-  height: 5rem;
+  height: 80px;
   display: flex;
   //   justify-content: space-between;
   .info {
@@ -56,13 +56,14 @@ const handelcloseclick = () => {
     justify-content: center;
     .SearchBox {
       .el-input {
-        width: 16.25rem !important;
+        width: 260px !important;
       }
     }
     .loginbox {
+      font-size: 20px;
       cursor: pointer;
-      width: 6.25rem;
-      margin-left: 1.25rem;
+      width: 100px;
+      margin-left: 20px;
     }
   }
 }

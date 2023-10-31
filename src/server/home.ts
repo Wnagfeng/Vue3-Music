@@ -6,7 +6,7 @@ export function getBannerData() {
 }
 export function getPlaylistdata(
   cat: string,
-  limit: number = 5,
+  limit: number = 6,
   offset: number = 0,
   order: string = 'hot',
 ) {
@@ -17,6 +17,17 @@ export function getPlaylistdata(
       limit,
       offset,
       order,
+    },
+  });
+}
+export function GetNewDisData(area: any, type = 'new', limit: 15, offset: 0) {
+  return wfrequest.get({
+    url: 'album/new',
+    params: {
+      area,
+      type,
+      limit,
+      offset,
     },
   });
 }

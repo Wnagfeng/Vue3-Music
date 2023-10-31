@@ -62,6 +62,7 @@ const handelNavBarclick = (index: number, item: ItemType) => {
     }
   }
   .NavLink {
+    font-size: 20px;
     width: 80%;
     margin-top: 50px;
     .nav {

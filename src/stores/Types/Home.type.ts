@@ -143,8 +143,74 @@ export interface Playlist {
   commentCount: number;
 }
 
+export interface Artist {
+  img1v1Id: number;
+  topicPerson: number;
+  picId: number;
+  musicSize: number;
+  followed: boolean;
+  trans: string;
+  albumSize: number;
+  img1v1Url: string;
+  picUrl: string;
+  briefDesc: string;
+  alias: any[];
+  name: string;
+  id: number;
+  img1v1Id_str: string;
+}
+
+export interface Artist {
+  img1v1Id: number;
+  topicPerson: number;
+  picId: number;
+  musicSize: number;
+  followed: boolean;
+  trans: string;
+  albumSize: number;
+  img1v1Url: string;
+  picUrl: string;
+  briefDesc: string;
+  name: string;
+  id: number;
+  picId_str: string;
+  img1v1Id_str: string;
+}
+
+export interface NewDisData {
+  songs: any[];
+  paid: boolean;
+  onSale: boolean;
+  tags: string;
+  copyrightId: number;
+  artists: Artist[];
+  artist: Artist;
+  picId: number;
+  company: string;
+  status: number;
+  pic: number;
+  commentThreadId: string;
+  publishTime: number;
+  picUrl: string;
+  briefDesc: string;
+  companyId: number;
+  blurPicUrl: string;
+  subType: string;
+  description: string;
+  alias: any[];
+  name: string;
+  id: number;
+  type: string;
+  size: number;
+  picId_str: string;
+  areaId: number;
+  exclusive: boolean;
+  isSub: boolean;
+}
 export interface HomeType {
   banners: Banner[];
   type: string;
   playlists: Playlist[];
+  area: String;
+  NewDisData: NewDisData[];
 }

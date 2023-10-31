@@ -12,36 +12,64 @@
         </el-carousel>
       </div>
     </div>
+    <!-- 热门推荐  -->
     <div class="recommendWrapper">
       <BaseHeader :linkeds="linkds"></BaseHeader>
-      <div class="palylistItem">
-        <template v-for="(item, index) in HomeStore.playlists" :key="index">
-          <!-- {{ item }} -->
-          <PaylistItem :item-data="item"></PaylistItem>
-        </template>
-      </div>
+      <template v-if="playlists.length">
+        <div class="palylistItem">
+          <template v-for="(item, index) in playlists" :key="index">
+            <PaylistItem :item-data="item"></PaylistItem>
+          </template>
+        </div>
+      </template>
+      <template v-else>
+        <Loading></Loading>
+      </template>
     </div>
-    <!-- 热门推荐  -->
+    <!-- 新碟上架 -->
+    <div class="NewdiscWrapper">
+      <BaseHeader :linkeds="NewDisc"></BaseHeader>
+      <template v-if="NewDisData.length">
+        <div class="disList">
+          <template v-for="(item, index) in NewDisData">
+            <NewDis :Itemdata="item"></NewDis>
+          </template>
+        </div>
+      </template>
+      <template v-else>
+        <Loading></Loading>
+      </template>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useHomeStore } from '@/stores/HomeStore';
 import BaseHeader from '@/components/BaseHeader.vue';
 import PaylistItem from '@/components/PallistItem.vue';
+import Loading from '@/components/Loading.vue';
+import NewDis from '@/components/NewDis.vue';
 const linkds = {
   title: '好歌推荐',
   subtitle: ['华语', '流行', '摇滚', '民谣', '电子', '粤语'],
 };
+const NewDisc = {
+  title: '新碟上架',
+  subtitle: ['全部', '华语', '欧美', '韩国', '日本'],
+};
+
 const HomeStore = useHomeStore();
+const { playlists, NewDisData } = storeToRefs(HomeStore);
 onMounted(() => {
   HomeStore.fetchGetBannerData();
   HomeStore.fetchGetPaylistData('华语');
+  HomeStore.fetchGetNewDisListData('ALL');
 });
 </script>
 <style scoped lang="less">
 .HomeWrapper {
-  padding: 20px;
+  box-sizing: border-box;
   .imgbox {
     width: 500px;
     height: 400px;
@@ -61,14 +89,31 @@ onMounted(() => {
   }
   .recommendWrapper {
     padding: 20px;
-    width: 100%;
-    height: 700px;
-    background-color: #ffffff;
+    margin-right: 20px;
+    background-color: white;
     border-radius: 12px;
+    box-shadow: 0 20px 27px #0000000d;
+    min-height: 440px;
+    .palylistItem {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
   }
-  .palylistItem {
-    display: flex;
-    justify-content: space-around;
+
+  .NewdiscWrapper {
+    margin-top: 30px;
+    padding: 20px;
+    margin-right: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 27px #0000000d;
+    min-height: 560.75px;
+    .disList {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
   }
 }
 </style>

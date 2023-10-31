@@ -19,14 +19,22 @@
 import type { PayListItemType } from './types/PayListItem';
 import { useNumberFormat } from '@/utils/FormatData';
 const props = defineProps<PayListItemType>();
-console.log(props);
 </script>
 <style scoped lang="less">
 .PaylistItemWrapper {
   width: 220px;
-  //   height: 220px;
   overflow: hidden;
   position: relative;
+  margin-left: 10px;
+  margin: 10px;
+  .info {
+    font-size: 18px;
+    overflow: hidden; //多出的隐藏
+    text-overflow: ellipsis; //多出部分用...代替
+    display: -webkit-box; //定义为盒子模型显示
+    -webkit-line-clamp: 2; //用来限制在一个块元素显示的文本的行数
+    -webkit-box-orient: vertical; //从上到下垂直排列子元素（设置伸缩盒子的子元素排列方式）
+  }
   .label {
     position: absolute;
     top: 5px;
@@ -42,6 +50,7 @@ console.log(props);
     );
     display: flex;
     align-items: center;
+    justify-content: center;
     .icon {
       margin-bottom: 4px;
       width: 20px;

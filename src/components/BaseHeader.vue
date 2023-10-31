@@ -2,7 +2,7 @@
   <div class="BaseHeaderWrrpper">
     <h1>{{ props.linkeds.title }}</h1>
     <div class="list">
-      <template v-for="(item, index) in props.linkeds.subtitle">
+      <template v-for="(item, index) in props.linkeds.subtitle" :key="index">
         <span
           class="nav"
           @click="handelnavclick(item, index)"
@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { defineProps, ref } from 'vue';
 import { useHomeStore } from '@/stores/HomeStore';
+
 const HomeStore = useHomeStore();
 interface Iprops {
   linkeds: {
@@ -26,8 +27,13 @@ interface Iprops {
 const currentindex = ref(0);
 const props = defineProps<Iprops>();
 const handelnavclick = (item: string, index: number) => {
-  currentindex.value = index;
-  HomeStore.changecurrentnav(item);
+  if (props.linkeds.title === '好歌推荐') {
+    currentindex.value = index;
+    HomeStore.changecurrentnav(item);
+  } else if (props.linkeds.title === '新碟上架') {
+    currentindex.value = index;
+    HomeStore.fetchGetNewDisListData(item);
+  }
 };
 </script>
 <style scoped lang="less">
@@ -41,6 +47,8 @@ const handelnavclick = (item: string, index: number) => {
     padding-bottom: 3px;
     cursor: pointer;
     margin-left: 20px;
+    font-size: 20px;
+    font-weight: 600;
   }
   .navactive {
     border-bottom: 3px solid #fb8a00;
