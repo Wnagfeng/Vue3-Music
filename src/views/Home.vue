@@ -31,13 +31,19 @@
       <BaseHeader :linkeds="NewDisc"></BaseHeader>
       <template v-if="NewDisData.length">
         <div class="disList">
-          <template v-for="(item, index) in NewDisData">
+          <template v-for="(item, index) in NewDisData" :key="index">
             <NewDis :Itemdata="item"></NewDis>
           </template>
         </div>
       </template>
       <template v-else>
         <Loading></Loading>
+      </template>
+    </div>
+    <!-- 歌曲榜单 -->
+    <div class="TopplayListWrapper">
+      <template v-for="(item, index) in TopPaylistData" :key="index">
+        <TopPlayListVue :Itemdata="item"></TopPlayListVue>
       </template>
     </div>
   </div>
@@ -50,6 +56,7 @@ import BaseHeader from '@/components/BaseHeader.vue';
 import PaylistItem from '@/components/PallistItem.vue';
 import Loading from '@/components/Loading.vue';
 import NewDis from '@/components/NewDis.vue';
+import TopPlayListVue from '@/components/TopPlayList.vue';
 const linkds = {
   title: '好歌推荐',
   subtitle: ['华语', '流行', '摇滚', '民谣', '电子', '粤语'],
@@ -60,11 +67,13 @@ const NewDisc = {
 };
 
 const HomeStore = useHomeStore();
-const { playlists, NewDisData } = storeToRefs(HomeStore);
+const { playlists, NewDisData, TopPaylistData } = storeToRefs(HomeStore);
+
 onMounted(() => {
   HomeStore.fetchGetBannerData();
   HomeStore.fetchGetPaylistData('华语');
   HomeStore.fetchGetNewDisListData('ALL');
+  HomeStore.fetchGetTopPlaylists();
 });
 </script>
 <style scoped lang="less">
@@ -114,6 +123,17 @@ onMounted(() => {
       justify-content: space-between;
       flex-wrap: wrap;
     }
+  }
+  .TopplayListWrapper {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    padding: 20px;
+    margin-right: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 27px #0000000d;
+    min-height: 560.75px;
   }
 }
 </style>
