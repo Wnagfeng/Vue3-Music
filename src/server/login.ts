@@ -1,8 +1,8 @@
 import wfrequest from '.';
-export function Login(phone: number, password: number) {
+export function Login(phone: string, password: string) {
   return wfrequest.get({
     url: '/login/cellphone',
-    data: {
+    params: {
       phone,
       password,
     },

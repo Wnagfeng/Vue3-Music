@@ -504,6 +504,126 @@ export interface TopPaylistData {
   trialMode: number;
   toplistType: string;
 }
+export interface Artist {
+  id: number;
+  name: string;
+  alias: string[];
+  transNames: string[];
+}
+
+export interface Data {
+  id: number;
+  cover: string;
+  name: string;
+  playCount: number;
+  briefDesc?: any;
+  desc?: any;
+  artistName: string;
+  artistId: number;
+  duration: number;
+  mark: number;
+  subed: boolean;
+  artists: Artist[];
+}
+
+export interface HomeALLMvType {
+  count: number;
+  hasMore: boolean;
+  data: Data[];
+  code: number;
+}
+
+export interface Dj {
+  defaultAvatar: boolean;
+  province: number;
+  authStatus: number;
+  followed: boolean;
+  avatarUrl: string;
+  accountStatus: number;
+  gender: number;
+  city: number;
+  birthday: number;
+  userId: number;
+  userType: number;
+  nickname: string;
+  signature: string;
+  description: string;
+  detailDescription: string;
+  avatarImgId: number;
+  backgroundImgId: number;
+  backgroundUrl: string;
+  authority: number;
+  mutual: boolean;
+  expertTags?: any;
+  experts?: any;
+  djStatus: number;
+  vipType: number;
+  remarkName?: any;
+  authenticationTypes: number;
+  avatarDetail?: any;
+  avatarImgIdStr: string;
+  backgroundImgIdStr: string;
+  anchor: boolean;
+  avatarImgId_str: string;
+}
+
+export interface DjRadio {
+  id: number;
+  name: string;
+  picUrl: string;
+  programCount: number;
+  subCount: number;
+  createTime: number;
+  categoryId: number;
+  category: string;
+  rcmdtext: string;
+  radioFeeType: number;
+  feeScope: number;
+  playCount: number;
+  subed: boolean;
+  dj: Dj;
+  copywriter: string;
+  buyed: boolean;
+}
+
+export interface DideoData {
+  djRadios: DjRadio[];
+  hasMore: boolean;
+  code: number;
+}
+
+export interface Artist {
+  name: string;
+  id: number;
+  picId: number;
+  img1v1Id: number;
+  briefDesc: string;
+  picUrl: string;
+  img1v1Url: string;
+  albumSize: number;
+  alias: string[];
+  trans: string;
+  musicSize: number;
+  topicPerson: number;
+  showPrivateMsg?: any;
+  isSubed?: any;
+  accountId?: any;
+  picId_str: string;
+  img1v1Id_str: string;
+  transNames?: any;
+  followed: boolean;
+  mvSize?: any;
+  publishTime?: any;
+  identifyTag?: any;
+  alg?: any;
+  fansCount: number;
+}
+
+export interface HotSongPersongData {
+  Data1: Artist[];
+  Data2: Artist[];
+  Data3: Artist[];
+}
 export interface HomeType {
   banners: Banner[];
   type: string;
@@ -512,4 +632,8 @@ export interface HomeType {
   NewDisData: NewDisData[];
   TopPayListS: TopPayListSType[];
   TopPaylistData: TopPaylistData[];
+  HomeALlMv: HomeALLMvType[];
+  ALlMvarea: String;
+  DideoData: DideoData[];
+  HotPersongdata: HotSongPersongData[];
 }

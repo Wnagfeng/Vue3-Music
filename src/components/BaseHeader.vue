@@ -33,6 +33,9 @@ const handelnavclick = (item: string, index: number) => {
   } else if (props.linkeds.title === '新碟上架') {
     currentindex.value = index;
     HomeStore.fetchGetNewDisListData(item);
+  } else if (props.linkeds.title === '最新Mv') {
+    currentindex.value = index;
+    HomeStore.FetchchangeMustNewMvNav(item);
   }
 };
 </script>

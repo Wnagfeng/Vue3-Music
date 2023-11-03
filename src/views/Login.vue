@@ -10,10 +10,22 @@
       <h2>用户登录</h2>
       <form>
         <label for="email" class="infoemal">网易云账号：</label>
-        <input type="email" id="email" name="email" required />
+        <input
+          type="email1"
+          id="email"
+          name="email"
+          v-model="LoginForm.name"
+          required
+        />
         <label for="password">密码：</label>
-        <input type="password" id="password" name="password" required />
-        <input type="submit" value="登录" />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          v-model="LoginForm.password"
+          required
+        />
+        <input type="Login" value="登录" @click="handelLoginCLick" />
       </form>
     </div>
   </div>
@@ -21,10 +33,18 @@
 <script setup>
 import { reactive } from 'vue';
 import { useLoginstore } from '@/stores/LoginStore';
+import { Loading } from 'element-plus/es/components/loading/src/service';
 const LoginStore = useLoginstore();
-const LoginForm = reactive({});
+const LoginForm = reactive({
+  name: '',
+  password: '',
+});
 const handelcloseclick = () => {
-  LoginStore.changeIsloginState();
+  LoginStore.CloseLogingTose();
+};
+const handelLoginCLick = () => {
+  // 19556355023
+  LoginStore.FetchLoging(LoginForm.name, LoginForm.password);
 };
 </script>
 <style scoped lang="less">
@@ -34,7 +54,7 @@ const handelcloseclick = () => {
 .LoginWrapper {
   z-index: 9999;
   width: 500px;
-  height:500px;
+  height: 500px;
   position: absolute;
   left: 38%;
   // transform: translateX(-38%);
@@ -76,7 +96,7 @@ const handelcloseclick = () => {
   // background-color: #333;
   border-radius: 50%;
   color: #fff;
-  font-size:40px;
+  font-size: 40px;
   height: 80px;
   width: 80px;
   display: flex;
@@ -109,8 +129,7 @@ form {
   flex-direction: column;
   align-items: center;
   width: 70%;
-  margin-bottom: 20px
-  ;
+  margin-bottom: 20px;
 }
 
 label {
@@ -122,7 +141,7 @@ label {
   color: #333;
 }
 
-input[type='email'],
+input[type='email1'],
 input[type='password'] {
   border: none;
   border-radius: 5px;
@@ -134,7 +153,7 @@ input[type='password'] {
   margin-bottom: 20px;
 }
 
-input[type='submit'] {
+input[type='Login'] {
   background-color: #333;
   border: none;
   border-radius: 5px;
@@ -143,10 +162,12 @@ input[type='submit'] {
   font-size: 16px;
   margin-top: 20px;
   padding: 10px 40px;
+  width: 60px;
+  text-align: center;
   transition: background-color 0.3s ease;
 }
 
-input[type='submit']:hover {
+input[type='Login']:hover {
   background-color: #fff;
   color: #333;
 }
@@ -154,7 +175,7 @@ input[type='submit']:hover {
   position: absolute;
   cursor: pointer;
   top: 20px;
-  right:20px;
+  right: 20px;
   width: 30px;
   height: 30px;
   img {

@@ -30,7 +30,6 @@
 <script setup lang="ts">
 import type { TopPayListType } from './types/TopPalyList';
 const props = defineProps<TopPayListType>();
-console.log(props);
 </script>
 <style scoped lang="less">
 .TopPlayListWrapper {

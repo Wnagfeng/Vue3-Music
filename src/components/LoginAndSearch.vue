@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <template v-if="LoginStore.isShowLoginState">
+  <template v-if="isShowLoginState">
     <LoginVue></LoginVue>
   </template>
 </template>
@@ -24,8 +24,11 @@ import { ref } from 'vue';
 import { Search } from '@element-plus/icons-vue';
 import { useLoginstore } from '@/stores/LoginStore';
 import LoginVue from '../views/Login.vue';
+import { storeToRefs } from 'pinia';
 const SearchValue = ref('');
+
 const LoginStore = useLoginstore();
+const { isShowLoginState } = storeToRefs(LoginStore);
 const handelLoginClick = () => {
   LoginStore.changeIsloginState();
 };

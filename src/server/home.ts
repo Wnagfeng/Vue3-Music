@@ -48,3 +48,32 @@ export function GetPayListToTopPlayListsId(id: number) {
     },
   });
 }
+
+// 获取到所有的MV
+export function GetALLMV(area: any, limit: number, offset: number) {
+  return wfrequest.get({
+    url: '/mv/all',
+    params: {
+      area,
+      limit,
+      offset,
+    },
+  });
+}
+
+// 获取到电台数据
+export function GetHomeDideoData() {
+  return wfrequest.get({
+    url: '/dj/hot',
+    params: {
+      limit: 6,
+      offset: 0,
+    },
+  });
+}
+// 获取到热门歌手数据
+export function GetHotSongPersong() {
+  return wfrequest.get({
+    url: '/top/artists',
+  });
+}

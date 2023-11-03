@@ -6,6 +6,9 @@ import {
   GetNewDisData,
   GetTopPlaylists,
   GetPayListToTopPlayListsId,
+  GetALLMV,
+  GetHomeDideoData,
+  GetHotSongPersong,
 } from '../server/home';
 import type { HomeType } from './Types/Home.type';
 export const useHomeStore = defineStore('HomeStore', {
@@ -18,6 +21,15 @@ export const useHomeStore = defineStore('HomeStore', {
       NewDisData: [], //新碟上架
       TopPayListS: [], //首页四个榜单数据
       TopPaylistData: [], //每个歌单的数据
+      HomeALlMv: [], //首页mv数据
+      ALlMvarea: '全部',
+      DideoData: [], //电台数据
+      HotPersongdata: [
+        //热门歌手数据
+        // Data1: [],
+        // Data2: [],
+        // Data3: [],
+      ],
     };
   },
   actions: {
@@ -28,6 +40,10 @@ export const useHomeStore = defineStore('HomeStore', {
     async changecurrentnav(nav: string) {
       this.fetchGetPaylistData(nav);
       this.type = nav;
+    },
+    async FetchchangeMustNewMvNav(nav: string) {
+      this.ALlMvarea = nav;
+      this.fetchGetHomeAllMv();
     },
     async fetchGetPaylistData(nav: string) {
       this.playlists = [];
@@ -72,9 +88,32 @@ export const useHomeStore = defineStore('HomeStore', {
     },
     // 根据榜单数据获取到榜单内容
     async FetchGetPayListToTopPlayListsId(id: number) {
+      this.TopPaylistData = [];
       const res = await GetPayListToTopPlayListsId(id);
       this.TopPaylistData.push(res.playlist);
-      console.log(res);
+    },
+    async fetchGetHomeAllMv() {
+      this.HomeALlMv = [];
+      const area = this.ALlMvarea;
+      const limit = 12;
+      const offset = 0;
+      const res = await GetALLMV(area, limit, offset);
+      this.HomeALlMv = res.data;
+    },
+    async FetchGetHomeDideoData() {
+      const res = await GetHomeDideoData();
+      this.DideoData = res.djRadios;
+    },
+    async fetchGetHotSongPersong() {
+      const res = await GetHotSongPersong();
+      // 数据分拆
+      // 创建三个数组
+      const data = res.artists;
+      const data1 = res.artists.slice(0, 15);
+      const data2 = res.artists.slice(15, 30);
+      const data3 = res.artists.slice(30, 45);
+      const Result = [data1, data2, data3];
+      this.HotPersongdata = Result;
     },
   },
 });
