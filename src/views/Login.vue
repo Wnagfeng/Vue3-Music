@@ -34,6 +34,18 @@
 import { reactive } from 'vue';
 import { useLoginstore } from '@/stores/LoginStore';
 import { Loading } from 'element-plus/es/components/loading/src/service';
+import { ElMessage } from 'element-plus';
+const emit = defineEmits({
+  noVerification: null, // 无验证函数
+  LoginClck: (val) => {
+    if (val) {
+      return true;
+    } else {
+      console.error('Invalid submit event payload!');
+      return false;
+    }
+  },
+});
 const LoginStore = useLoginstore();
 const LoginForm = reactive({
   name: '',
@@ -44,7 +56,15 @@ const handelcloseclick = () => {
 };
 const handelLoginCLick = () => {
   // 19556355023
+  if (LoginForm.name == '' && LoginForm.password == '') {
+    ElMessage({
+      message: '请完善您的信息',
+      type: 'warning',
+    });
+    return
+  }
   LoginStore.FetchLoging(LoginForm.name, LoginForm.password);
+  emit('LoginClck', '11');
 };
 </script>
 <style scoped lang="less">

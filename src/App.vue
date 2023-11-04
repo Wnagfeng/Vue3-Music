@@ -5,7 +5,7 @@
         <!-- 这放导航条 -->
         <SideBar></SideBar>
       </div>
-      <div class="right">
+      <div class="right" @mousewheel="handelmousewheelClick">
         <!-- 登录和搜索的组件 -->
         <LoginAndSearchVue></LoginAndSearchVue>
         <!-- 这里进行路由的匹配 -->
@@ -34,6 +34,9 @@ const isShowLoadingState = ref(false);
 setTimeout(() => {
   isShowLoadingState.value = true;
 }, 4900);
+const handelmousewheelClick=()=>{
+  
+}
 </script>
 <style scoped lang="less">
 .LoadingWrapperApp {

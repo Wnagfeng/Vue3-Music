@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import type { PayListItemType } from './types/PayListItem';
 import { useNumberFormat } from '@/utils/FormatData';
+
 const props = defineProps<PayListItemType>();
 </script>
 <style scoped lang="less">

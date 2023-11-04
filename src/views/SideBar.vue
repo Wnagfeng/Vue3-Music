@@ -29,8 +29,16 @@
 <script setup lang="ts">
 import sidebardata from '../data/sidebar.json';
 import formatUrl from '../utils/FormatUrl';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+onMounted(() => {
+  const Path = router.currentRoute.value.href;
+  sidebardata.map((item, index) => {
+    if (item.path == Path) {
+      CurrentIndex.value = index;
+    }
+  });
+});
 const router = useRouter();
 const CurrentIndex = ref(0);
 interface ItemType {
