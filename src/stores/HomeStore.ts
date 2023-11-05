@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+
 import { defineStore } from 'pinia';
 import {
   getBannerData,
@@ -24,12 +24,7 @@ export const useHomeStore = defineStore('HomeStore', {
       HomeALlMv: [], //首页mv数据
       ALlMvarea: '全部',
       DideoData: [], //电台数据
-      HotPersongdata: [
-        //热门歌手数据
-        // Data1: [],
-        // Data2: [],
-        // Data3: [],
-      ],
+      HotPersongdata: [], //热门歌手数据
     };
   },
   actions: {
@@ -106,8 +101,6 @@ export const useHomeStore = defineStore('HomeStore', {
     },
     async fetchGetHotSongPersong() {
       const res = await GetHotSongPersong();
-      // 数据分拆
-      // 创建三个数组
       const data = res.artists;
       const data1 = res.artists.slice(0, 15);
       const data2 = res.artists.slice(15, 30);
