@@ -44,8 +44,10 @@
     </div>
     <!-- 歌曲榜单 -->
     <div class="TopplayListWrapper">
-      <template v-for="(item, index) in TopPaylistData" :key="index">
-        <TopPlayListVue :Itemdata="item"></TopPlayListVue>
+      <template v-if="TopPaylistData.length">
+        <template v-for="(item, index) in TopPaylistData" :key="index">
+          <TopPlayListVue :Itemdata="item"></TopPlayListVue>
+        </template>
       </template>
     </div>
     <!-- 最新Mv -->

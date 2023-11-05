@@ -275,7 +275,7 @@ export interface RankingDatas {
   copied: boolean;
   relateResType?: any;
   subscribers: Subscriber[];
-  subscribed: boolean;
+  subscribed?: any;
   creator: Creator;
   tracks: Track[];
   videoIds?: any;

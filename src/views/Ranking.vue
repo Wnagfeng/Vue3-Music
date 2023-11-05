@@ -10,17 +10,33 @@
             <div class="name">{{ RankingDatas.name }}</div>
             <div class="time">
               <div class="updateTime">
-                更新时间：{{ FormatTime(RankingDatas.updateTime) }}
+                更新时间：{{
+                  RankingDatas.updateTime
+                    ? FormatTime(RankingDatas.updateTime)
+                    : ''
+                }}
               </div>
               <div class="createTime">
-                创建时间：{{ FormatTime(RankingDatas.createTime) }}
+                创建时间：{{
+                  RankingDatas.createTime
+                    ? FormatTime(RankingDatas.createTime)
+                    : ''
+                }}
               </div>
             </div>
             <div class="playCount">
-              播放数： {{ useNumberFormat(RankingDatas.playCount) }}
+              播放数：{{
+                RankingDatas.playCount
+                  ? useNumberFormat(RankingDatas.playCount)
+                  : ''
+              }}
             </div>
             <div class="commentCount">
-              评论数： {{ useNumberFormat(RankingDatas.commentCount) }}
+              评论数：{{
+                RankingDatas.commentCount
+                  ? useNumberFormat(RankingDatas.commentCount)
+                  : ''
+              }}
             </div>
             <div class="description">
               歌单数： {{ RankingDatas.description }}
@@ -34,19 +50,12 @@
         </div>
       </template>
       <div class="SongList BaseWrapper">
-        <!-- 封装一个组件 -->
-        <div class="title">
-          <div class="right">
-            <h2>歌曲列表</h2>
-            <div class="SongCount">共100首歌曲</div>
-          </div>
-          <div class="left">
-            <div class="img">
-              <img class="PlaryImg" src="../assets/img/Plary.png" alt="" />
-              <span>播放全部</span>
-            </div>
-          </div>
-        </div>
+        <template v-if="RankingDatas.tracks">
+          <SongList :Itemdata="RankingDatas.tracks"></SongList>
+        </template>
+        <template v-else>
+          <Loading></Loading>
+        </template>
       </div>
     </div>
 
@@ -100,6 +109,7 @@ import { onMounted, ref } from 'vue';
 import { userTopListStore } from '../stores/TopListStore';
 import { useNumberFormat } from '@/utils/FormatData';
 import Loading from '../components/Loading.vue';
+import SongList from '../components/SongList.vue';
 const TopListStore = userTopListStore();
 const selectOneIndex = ref(0);
 const selectTwoIndex = ref(-1);
@@ -172,37 +182,6 @@ onMounted(() => {
     flex-direction: column;
     .SongList {
       width: 97%;
-      height: 300px;
-      .title {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        .right {
-          display: flex;
-          align-items: center;
-          .SongCount {
-            margin-left: 20px;
-          }
-        }
-        .left {
-          .img {
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #f5ab17;
-            width: 120px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .PlaryImg {
-            width: 20px;
-            height: 20px;
-          }
-        }
-      }
     }
   }
 
