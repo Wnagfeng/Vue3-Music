@@ -161,12 +161,11 @@ onMounted(() => {
   }
 }
 .active {
-  background-color: #90909090;
+  background-color: #cacaca90;
 }
 .BaseWrapper {
   margin-top: 30px;
   padding: 20px;
-  margin-right: 10px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 20px 27px #0000000d;
@@ -181,12 +180,13 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     .SongList {
-      width: 97%;
+      // width: 93%;
     }
   }
 
   .Navs {
     width: 200px;
+    min-width: 200px;
     overflow: hidden;
     .TopListone {
       .headd {
@@ -197,13 +197,15 @@ onMounted(() => {
       .OneItemWrapper {
         font-size: 15px;
         .items {
+          height: 49px;
           transition: background-color 0.5s;
           border-radius: 12px;
           position: relative;
           cursor: pointer;
           display: flex;
           align-items: center;
-          margin-top: 20px;
+          padding-top: 1px;
+          margin-top: 21px;
           .img {
             img {
               border-radius: 10px;
@@ -262,14 +264,9 @@ onMounted(() => {
     }
   }
   .SongsInfo {
-    min-height: 255px;
-    width: 100%;
-    // height: 1600px;
     display: flex;
+    margin-top: 40px;
     justify-content: space-between;
-    margin-top: 30px;
-    padding: 20px;
-    margin-right: 20px;
     border-radius: 12px;
     .img {
       width: 250px;
@@ -282,10 +279,9 @@ onMounted(() => {
     }
     .info {
       font-size: 15px;
-      width: 70%;
+      width: 60%;
       height: 215px;
       padding: 20px;
-      margin-right: 20px;
       background-color: white;
       border-radius: 12px;
       box-shadow: 0 20px 27px #0000000d;

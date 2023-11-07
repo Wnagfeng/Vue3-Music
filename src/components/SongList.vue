@@ -14,9 +14,9 @@
     </div>
     <div class="songList">
       <el-table :data="props.Itemdata" style="width: 100%">
-        <el-table-column label="序号" width="180">
+        <el-table-column label="序号" width="80">
           <template v-slot="row">
-            <div class="imgbox">
+            <div class="imgbox" @click="handelPlaySong(row)">
               <img src="../assets/img/Plary.png" alt="" />
             </div>
             <div class="index">
@@ -45,14 +45,14 @@
         </el-table-column>
         <el-table-column prop="name" label="歌曲" />
         <el-table-column prop="al.name" label="专辑" />
-        <el-table-column prop="dt" label="时长">
+        <el-table-column prop="dt" label="时长" width="100px">
           <template v-slot="{ row }">
             <div class="time">
               {{ convertMillisecondsToMinutesAndSeconds(row.dt) }}
             </div>
             <div class="addPlaylist">
-              <div class="imgbox">
-                <img src="../assets/img/AddPlylist.png" alt="">
+              <div class="imgbox" @click="handelAddSongList(row)">
+                <img src="../assets/img/AddPlylist.png" alt="" />
               </div>
             </div>
           </template>
@@ -65,6 +65,12 @@
 import type { Track } from './types/SongList';
 import { convertMillisecondsToMinutesAndSeconds } from '../utils/FormatSongTime';
 const props = defineProps<Track>();
+const handelPlaySong = (data: any) => {
+  console.log('点击了播放', data.row.id);
+};
+const handelAddSongList = (data: any) => {
+  console.log('点击了加入播放', data);
+};
 </script>
 <style scoped lang="less">
 .SongListWrapper {
@@ -111,7 +117,7 @@ const props = defineProps<Track>();
       .index {
         display: none;
       }
-      .time{
+      .time {
         display: none;
       }
     }

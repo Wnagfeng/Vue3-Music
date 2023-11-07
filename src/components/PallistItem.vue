@@ -33,7 +33,7 @@ const props = defineProps<PayListItemType>();
     overflow: hidden; //多出的隐藏
     text-overflow: ellipsis; //多出部分用...代替
     display: -webkit-box; //定义为盒子模型显示
-    -webkit-line-clamp: 2; //用来限制在一个块元素显示的文本的行数
+    -webkit-line-clamp: 1; //用来限制在一个块元素显示的文本的行数
     -webkit-box-orient: vertical; //从上到下垂直排列子元素（设置伸缩盒子的子元素排列方式）
   }
   .label {

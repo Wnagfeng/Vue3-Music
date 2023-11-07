@@ -33,6 +33,7 @@ export default function UserScalePage(opstion) {
   }
   onMounted(() => {
     // 添加
+
     triggerScale();
     window.addEventListener('resize', resizeFunc);
   });
