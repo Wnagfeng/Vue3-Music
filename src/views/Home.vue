@@ -117,6 +117,9 @@ import NewDis from '@/components/NewDis.vue';
 import TopPlayListVue from '@/components/TopPlayList.vue';
 import MustNewMvItem from '@/components/MustNewMvItem.vue';
 import DideoItem from '@/components/DideoItem.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
 const linkds = {
   title: '好歌推荐',
   subtitle: ['华语', '流行', '摇滚', '民谣', '电子', '粤语'],
@@ -155,8 +158,9 @@ onMounted(() => {
   HomeStore.FetchGetHomeDideoData();
   HomeStore.fetchGetHotSongPersong();
 });
+
 const handelPlayLitsiTitemCLick = (item: number) => {
-  console.log(item);
+  router.push({ path: `/SongDetaile/${item}` });
 };
 </script>
 <style scoped lang="less">

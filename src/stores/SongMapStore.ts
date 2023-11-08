@@ -10,6 +10,7 @@ export const useSongMapStore = defineStore('SongMapStore', {
       cat: '华语',
       limit: 54,
       offset: 0,
+      playlist: {},
     };
   },
   actions: {
@@ -41,7 +42,8 @@ export const useSongMapStore = defineStore('SongMapStore', {
     },
     async FetchGetPayListToTopPlayListsId(id: number) {
       const res = await GetPayListToTopPlayListsId(id);
-      console.log(res);
+      this.playlist = {};
+      this.playlist = res.playlist;
     },
   },
 });

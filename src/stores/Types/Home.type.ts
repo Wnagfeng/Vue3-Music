@@ -635,5 +635,5 @@ export interface HomeType {
   HomeALlMv: HomeALLMvType[];
   ALlMvarea: String;
   DideoData: DideoData[];
-  HotPersongdata: HotSongPersongData[];
+  HotPersongdata: HotSongPersongData{};
 }

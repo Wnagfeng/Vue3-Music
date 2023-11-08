@@ -55,7 +55,7 @@ export interface VideoInfo {
 }
 
 export interface Track {
-  Itemdata: {
+  Itemdata?: {
     name: string;
     id: number;
     pst: number;
