@@ -1,11 +1,15 @@
 import { defineStore } from 'pinia';
 import { GetcatlistData, GetTopPlaylists } from '../server/SongMap';
+import { GetPayListToTopPlayListsId } from '../server/home';
 import type { SongMapDataType } from './Types/SongMapStore.type';
 export const useSongMapStore = defineStore('SongMapStore', {
   state: (): SongMapDataType => {
     return {
       SongmapNavs: [],
       SongMaplistData: [],
+      cat: '华语',
+      limit: 54,
+      offset: 0,
     };
   },
   actions: {
@@ -28,10 +32,16 @@ export const useSongMapStore = defineStore('SongMapStore', {
       this.SongmapNavs = ressult;
     },
     // 根据类型获取歌单
-    async FetchGetTopPlaylists(cat: string, limit: number, offset: number) {
-      const res = await GetTopPlaylists(cat, limit, offset);
-      this.SongMaplistData = [];
-      this.SongMaplistData = res.playlists;
+    async FetchGetTopPlaylists() {
+      const res = await GetTopPlaylists(this.cat, this.limit, this.offset);
+      const oldData = this.SongMaplistData;
+      const newData = res.playlists;
+      const result = [...oldData, ...newData];
+      this.SongMaplistData = result;
+    },
+    async FetchGetPayListToTopPlayListsId(id: number) {
+      const res = await GetPayListToTopPlayListsId(id);
+      console.log(res);
     },
   },
 });

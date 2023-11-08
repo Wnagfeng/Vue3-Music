@@ -20,7 +20,10 @@
       <template v-if="playlists.length">
         <div class="palylistItem">
           <template v-for="(item, index) in playlists" :key="index">
-            <PaylistItem :item-data="item"></PaylistItem>
+            <PaylistItem
+              :item-data="item"
+              @click="handelPlayLitsiTitemCLick(item.id)"
+            ></PaylistItem>
           </template>
         </div>
       </template>
@@ -152,6 +155,9 @@ onMounted(() => {
   HomeStore.FetchGetHomeDideoData();
   HomeStore.fetchGetHotSongPersong();
 });
+const handelPlayLitsiTitemCLick = (item: number) => {
+  console.log(item);
+};
 </script>
 <style scoped lang="less">
 .el-carousel__arrow {

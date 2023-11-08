@@ -5,7 +5,11 @@
         <!-- 这放导航条 -->
         <SideBar></SideBar>
       </div>
-      <div class="right" @mousewheel="handelmousewheelClick">
+      <div
+        class="right"
+        @mousewheel="handelmousewheelClick"
+        @scroll="scrolling"
+      >
         <!-- 登录和搜索的组件 -->
         <LoginAndSearchVue></LoginAndSearchVue>
         <!-- 这里进行路由的匹配 -->
@@ -30,13 +34,28 @@ import SideBar from './views/SideBar.vue';
 import LoginAndSearchVue from './components/LoginAndSearch.vue';
 import HomSvgVue from './components/HomSvg.vue';
 import { ref, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useSongMapStore } from '@/stores/SongMapStore';
+const mapStore = useSongMapStore();
+const { offset, limit } = storeToRefs(mapStore);
 const isShowLoadingState = ref(false);
 setTimeout(() => {
   isShowLoadingState.value = true;
 }, 4900);
-const handelmousewheelClick=()=>{
-  
-}
+const handelmousewheelClick = () => {};
+const scrolling = (e: any) => {
+  const clientHeight = e.target.clientHeight;
+  const scrollHeight = e.target.scrollHeight;
+  const scrollTop = e.target.scrollTop;
+
+  if (scrollTop + clientHeight >= scrollHeight) {
+    offset.value = limit.value;
+    limit.value = limit.value + 54;
+    mapStore.FetchGetTopPlaylists();
+  } else {
+  }
+};
+onMounted(() => {});
 </script>
 <style scoped lang="less">
 .LoadingWrapperApp {

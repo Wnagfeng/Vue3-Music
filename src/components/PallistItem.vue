@@ -23,6 +23,7 @@ const props = defineProps<PayListItemType>();
 </script>
 <style scoped lang="less">
 .PaylistItemWrapper {
+  cursor: pointer;
   width: 220px;
   overflow: hidden;
   position: relative;

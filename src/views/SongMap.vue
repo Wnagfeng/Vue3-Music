@@ -1,5 +1,5 @@
 <template>
-  <div class="SongMapWrapper" ref="container">
+  <div class="SongMapWrapper">
     <div class="SongMapNavs BaseWrapper">
       <div class="Select">
         <div class="selectdNas">{{ SlelectINfo }}</div>
@@ -33,7 +33,10 @@
     <div class="SongMapListdata BaseWrapper">
       <template v-if="SongMaplistData.length">
         <template v-for="(item, index) in SongMaplistData" :key="index">
-          <PallistItem :item-data="item"></PallistItem> </template
+          <PallistItem
+            :item-data="item"
+            @click="handelPlayLitsiTitemCLick(item.id)"
+          ></PallistItem> </template
       ></template>
       <template v-else>
         <div class="LoadingWrapper">
@@ -47,17 +50,17 @@
 import { useSongMapStore } from '@/stores/SongMapStore';
 import { onMounted, ref, onBeforeUnmount } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 import PallistItem from '@/components/PallistItem.vue';
 import Loading from '@/components/Loading.vue';
+const router = useRouter();
 const ISShowSelectState = ref(false);
 const SongMapStore = useSongMapStore();
-const { SongmapNavs, SongMaplistData } = storeToRefs(SongMapStore);
+const { SongmapNavs, SongMaplistData, cat, offset, limit } =
+  storeToRefs(SongMapStore);
 const SlelectINfo = ref('华语');
-const limit = ref(54);
-const offset = ref(0);
-const container = ref<HTMLElement | null>(null);
 onMounted(() => {
-  SongMapStore.FetchGetTopPlaylists('华语', limit.value, offset.value);
+  SongMapStore.FetchGetTopPlaylists();
   SongMapStore.FetchGetcatlistData();
 });
 onBeforeUnmount(() => {});
@@ -67,8 +70,15 @@ const handelchangeStateclick = () => {
 };
 const handleSelectNas = (name: string) => {
   ISShowSelectState.value = !ISShowSelectState.value;
+  cat.value = name;
+  offset.value = 0;
+  limit.value = 54;
   SlelectINfo.value = name;
-  SongMapStore.FetchGetTopPlaylists(name, limit.value, offset.value);
+  SongMaplistData.value = [];
+  SongMapStore.FetchGetTopPlaylists();
+};
+const handelPlayLitsiTitemCLick = (item: number) => {
+  router.push({ path: `/SongDetaile/${item}` });
 };
 </script>
 <style scoped lang="less">
@@ -80,7 +90,6 @@ const handleSelectNas = (name: string) => {
 }
 .SongMapWrapper {
   width: 97%;
-  // height: 100%;
   padding: 20px;
   .SongMapNavs {
     height: 20px;

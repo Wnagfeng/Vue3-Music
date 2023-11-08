@@ -5,7 +5,7 @@ import MyMusicVue from '@/views/MyMusic.vue';
 import RankingVue from '@/views/Ranking.vue';
 import SongMapVue from '@/views/SongMap.vue';
 import SongPersongVue from '@/views/SongPersong.vue';
-
+import SongMapDetaile from '@/views/SongMapDetaile.vue';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -43,6 +43,11 @@ const router = createRouter({
       path: '/mymusic',
       name: 'mymusic',
       component: MyMusicVue,
+    },
+    {
+      path: '/SongDetaile/:id',
+      name: 'SongMapDetaile',
+      component: SongMapDetaile,
     },
   ],
 });

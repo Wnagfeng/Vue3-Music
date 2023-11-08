@@ -133,4 +133,7 @@ export interface SongMapListData {
 export interface SongMapDataType {
   SongmapNavs: SongMapNavs[];
   SongMaplistData: SongMapListData[];
+  limit: number;
+  offset: number;
+  cat: string;
 }
