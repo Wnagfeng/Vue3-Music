@@ -11,7 +11,7 @@
         />
       </div>
       <div class="UserinfoBox">
-        <template v-if="IsShowUserinfo">
+        <template v-if="isLoadingSuccess">
           <div class="userinfoTop" style="display: flex; align-items: center">
             <img
               :src="UserCover"
@@ -41,7 +41,7 @@
     </div>
   </div>
   <template v-if="isShowLoginState">
-    <LoginVue @LoginClck="handelChildCLick"></LoginVue>
+    <LoginVue></LoginVue>
   </template>
 </template>
 <script setup lang="ts">
@@ -51,21 +51,11 @@ import { useLoginstore } from '@/stores/LoginStore';
 import LoginVue from '../views/Login.vue';
 import { storeToRefs } from 'pinia';
 import { localCache } from '@/utils/Cache';
-import { ElMessage } from 'element-plus'
-const SearchValue = ref('');
-const HaveUserinfo = localCache.getCache('WFMUSICPROFILE');
-const IsShowUserinfo = ref(false);
-let UserName = ref('');
-let UserCover = ref('');
-const handelChildCLick = () => {
-  UserName.value = HaveUserinfo.nickname;
-  UserCover.value = HaveUserinfo.avatarUrl;
-  if (UserName.value !== undefined && UserCover.value !== undefined) {
-    IsShowUserinfo.value = true;
-  }
-};
+import { ElMessage } from 'element-plus';
 const LoginStore = useLoginstore();
-const { isShowLoginState } = storeToRefs(LoginStore);
+const { isShowLoginState, isLoadingSuccess, UserCover, UserName, Profile } =
+  storeToRefs(LoginStore);
+const SearchValue = ref('');
 const handelLoginClick = () => {
   LoginStore.changeIsloginState();
 };
@@ -76,8 +66,22 @@ const handelExitLoging = () => {
   });
   localStorage.setItem('WFMusictoken', '');
   localCache.setCache('WFMUSICPROFILE', {});
-  IsShowUserinfo.value = false;
+  isLoadingSuccess.value = false;
 };
+onMounted(() => {
+  console.log('挂载了');
+  const info = localCache.getCache('WFMUSICPROFILE');
+  console.log(info);
+  if (info !== undefined) {
+    UserName.value = info.nickname;
+    UserCover.value = info.avatarUrl;
+    if (UserName.value !== undefined && UserCover.value !== undefined) {
+      isLoadingSuccess.value = true;
+    }
+  } else {
+    isLoadingSuccess.value = false;
+  }
+});
 </script>
 <style scoped lang="less">
 :deep(.is-focus) {

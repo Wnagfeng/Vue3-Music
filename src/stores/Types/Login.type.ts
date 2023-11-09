@@ -38,5 +38,8 @@ export interface Profile {
 
 export interface LoginDataType {
   isShowLoginState: boolean;
+  isLoadingSuccess: boolean;
   Profile: Profile | {};
+  UserName: string;
+  UserCover: string;
 }
