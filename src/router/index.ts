@@ -6,6 +6,7 @@ import RankingVue from '@/views/Ranking.vue';
 import SongMapVue from '@/views/SongMap.vue';
 import SongPersongVue from '@/views/SongPersong.vue';
 import SongMapDetaile from '@/views/SongMapDetaile.vue';
+import AlbumDetaile from '@/views/AlbumDetaile.vue';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -48,6 +49,11 @@ const router = createRouter({
       path: '/SongDetaile/:id',
       name: 'SongMapDetaile',
       component: SongMapDetaile,
+    },
+    {
+      path: '/AlbumDetaile/:id',
+      name: 'AlbumDetaile',
+      component: AlbumDetaile,
     },
   ],
 });

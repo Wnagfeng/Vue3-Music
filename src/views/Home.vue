@@ -39,7 +39,7 @@
           <template v-for="(item, index) in NewDisData" :key="index">
             <NewDis
               :Itemdata="item"
-              @click="HandelNewDisClick(item)"
+              @click="HandelNewDisClick(item.id)"
             ></NewDis>
           </template>
         </div>
@@ -165,8 +165,8 @@ onMounted(() => {
 const handelPlayLitsiTitemCLick = (item: number) => {
   router.push({ path: `/SongDetaile/${item}` });
 };
-const HandelNewDisClick = (item) => {
-  console.log(item);
+const HandelNewDisClick = (item: number) => {
+  router.push({ path: `/AlbumDetaile/${item}` });
 };
 </script>
 <style scoped lang="less">

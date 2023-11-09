@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { GetcatlistData, GetTopPlaylists } from '../server/SongMap';
 import { GetPayListToTopPlayListsId } from '../server/home';
 import type { SongMapDataType } from './Types/SongMapStore.type';
+
 export const useSongMapStore = defineStore('SongMapStore', {
   state: (): SongMapDataType => {
     return {

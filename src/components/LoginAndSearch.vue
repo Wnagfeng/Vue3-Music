@@ -69,9 +69,7 @@ const handelExitLoging = () => {
   isLoadingSuccess.value = false;
 };
 onMounted(() => {
-  console.log('挂载了');
   const info = localCache.getCache('WFMUSICPROFILE');
-  console.log(info);
   if (info !== undefined) {
     UserName.value = info.nickname;
     UserCover.value = info.avatarUrl;
