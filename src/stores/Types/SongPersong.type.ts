@@ -28,7 +28,8 @@ export interface SongPersongData {
   Type: string; //类型
   area: string; //类型
   initial: string; //热门排序
-  limit: string;
-  offset: string;
+  SongPersonglimit: number;
+  SongPersongoffset: number;
   SongPersongListData: SongPersongListData[];
+  IsShowLoading: boolean;
 }

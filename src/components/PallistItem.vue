@@ -8,7 +8,7 @@
       <span>/{{ props.itemData.trackCount }}首</span>
     </div>
     <div class="cover">
-      <img :src="$props.itemData.coverImgUrl" alt="" />
+      <img v-lazy="$props.itemData.coverImgUrl" alt="" />
     </div>
     <div class="info">
       <span>{{ $props.itemData.description }}</span>

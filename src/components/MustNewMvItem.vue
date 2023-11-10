@@ -2,7 +2,7 @@
   <div class="MustNewMvItemWrapper">
     <div class="coverWrapper">
       <div class="cover">
-        <img :src="propsData.Itemdata.cover" alt="" />
+        <img v-lazy="propsData.Itemdata.cover" alt="" />
         <div class="incon">
           <img src="../assets/img/VideoIcon.png" alt="" />
         </div>

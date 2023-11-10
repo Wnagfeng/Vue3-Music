@@ -2,7 +2,7 @@
   <div class="NewDisWrapper">
     <div class="cover">
       <div class="imgbox">
-        <img :src="$props.Itemdata.blurPicUrl" alt="" />
+        <img v-lazy="$props.Itemdata.blurPicUrl" alt="" />
         <div class="disCover">
           <img src="../assets/img/disc.986e5ec6.png" alt="" />
         </div>

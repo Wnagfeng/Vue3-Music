@@ -10,5 +10,7 @@
   ],
   "compilerOptions": {
     "types": ["element-plus/global"],
+    "strict": true,
+    "lib": ["ESNext", "DOM"]
   }
 }

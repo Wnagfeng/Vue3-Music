@@ -21,6 +21,7 @@
     "postcss-px2rem": "^0.3.0",
     "px2rem-loader": "^0.1.9",
     "vue": "^3.3.4",
+    "vue-lazyload": "^3.0.0",
     "vue-router": "^4.2.5",
     "vue-virtual-scroller": "^2.0.0-beta.8",
     "vue3-lazy": "^1.0.0-alpha.1"

@@ -1,7 +1,7 @@
 <template>
   <div class="DideoWrapper">
     <div class="cover">
-      <img :src="props.ItemData.picUrl" alt="" />
+      <img v-lazy="props.ItemData.picUrl" alt="" />
     </div>
     <div class="infoWrapper">
       <div class="info">

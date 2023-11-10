@@ -1,82 +1,87 @@
 <template>
   <div class="songpersongWrapper">
-    <div class="TopNav BaseWrapper">
-      <div class="type">
-        <div class="title">类型：</div>
-        <div class="TypeNav">
-          <template v-for="(item, index) in TypeNav" :key="index">
-            <div
-              class="items"
-              :class="[TypeNavRef === item.value ? 'active' : '']"
-              @click="handelChangeTypeValue(item.value)"
-            >
-              {{ item.key }}
-            </div>
-          </template>
-        </div>
-      </div>
-      <div class="area">
-        <div class="title">地区：</div>
-        <div class="areaNav">
-          <template v-for="(item, index) in areaNav" :key="index">
-            <div
-              class="items"
-              @click="handelChangeareaValue(item.value)"
-              :class="[areaNavRef === item.value ? 'active' : '']"
-            >
-              {{ item.key }}
-            </div>
-          </template>
-        </div>
-      </div>
-      <div class="letter">
-        <div class="title">名称：</div>
-        <div class="letterNav">
-          <template v-for="(item, index) in letterNav" :key="index">
-            <template v-if="item == '-1'">
+    <template v-if="IsShowLoading">
+      <div class="TopNav BaseWrapper">
+        <div class="type">
+          <div class="title">类型：</div>
+          <div class="TypeNav">
+            <template v-for="(item, index) in TypeNav" :key="index">
               <div
                 class="items"
-                @click="handelChangeLetterValue(item)"
-                :class="[letterNavRef === item ? 'active' : '']"
+                :class="[TypeNavRef === item.value ? 'active' : '']"
+                @click="handelChangeTypeValue(item.value)"
               >
-                热门
+                {{ item.key }}
               </div>
             </template>
-            <template v-else>
-              <div
-                class="items letterItems"
-                :class="[letterNavRef === item ? 'active' : '']"
-                @click="handelChangeLetterValue(item)"
-              >
-                {{ item }}
-              </div>
-            </template>
-          </template>
-        </div>
-      </div>
-    </div>
-    <div class="SongPersongList">
-      <template v-for="(item, index) in SongPersongListData" :key="index">
-        <div class="SongPersongData">
-          <div class="songPerdetaile">
-            <div class="img">
-              <img :src="item.picUrl" alt="" />
-            </div>
-            <div class="infoWrapper">
-              <div class="name">{{ item.name }}</div>
-              <div class="info">
-                <div class="albumSize">专辑：{{ item.albumSize }}</div>
-                <div class="musicSize">单曲：{{ item.musicSize }}</div>
-                <div class="fansCount">
-                  粉丝数：{{ useNumberFormat(item.fansCount) }}
-                </div>
-              </div>
-            </div>
-            <div class="back"></div>
           </div>
         </div>
-      </template>
-    </div>
+        <div class="area">
+          <div class="title">地区：</div>
+          <div class="areaNav">
+            <template v-for="(item, index) in areaNav" :key="index">
+              <div
+                class="items"
+                @click="handelChangeareaValue(item.value)"
+                :class="[areaNavRef === item.value ? 'active' : '']"
+              >
+                {{ item.key }}
+              </div>
+            </template>
+          </div>
+        </div>
+        <div class="letter">
+          <div class="title">名称：</div>
+          <div class="letterNav">
+            <template v-for="(item, index) in letterNav" :key="index">
+              <template v-if="item == '-1'">
+                <div
+                  class="items"
+                  @click="handelChangeLetterValue(item)"
+                  :class="[letterNavRef === item ? 'active' : '']"
+                >
+                  热门
+                </div>
+              </template>
+              <template v-else>
+                <div
+                  class="items letterItems"
+                  :class="[letterNavRef === item ? 'active' : '']"
+                  @click="handelChangeLetterValue(item)"
+                >
+                  {{ item }}
+                </div>
+              </template>
+            </template>
+          </div>
+        </div>
+      </div>
+      <div class="SongPersongList">
+        <template v-for="(item, index) in SongPersongListData" :key="index">
+          <div class="SongPersongData">
+            <div class="songPerdetaile">
+              <div class="img">
+                <img v-lazy="item.picUrl" alt="" ref="images" />
+              </div>
+              <div class="infoWrapper">
+                <div class="name">{{ item.name }}</div>
+                <div class="info">
+                  <div class="albumSize">专辑：{{ item.albumSize }}</div>
+                  <div class="musicSize">单曲：{{ item.musicSize }}</div>
+                  <div class="fansCount">
+                    粉丝数：{{ useNumberFormat(item.fansCount) }}
+                  </div>
+                </div>
+              </div>
+              <div class="back"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+    <template v-else>
+      <Loading></Loading>
+    </template>
   </div>
 </template>
 <script setup lang="ts">
@@ -85,15 +90,45 @@ import { UseSongPersongStore } from '@/stores/SongPersongStore';
 import { TypeNav, areaNav, letterNav } from '@/data/SongPersongNavs';
 import { useNumberFormat } from '@/utils/FormatData';
 import { onMounted, ref } from 'vue';
+import Loading from '@/components/Loading.vue';
+
 const SongPersongStore = UseSongPersongStore();
-const { Type, area, initial, SongPersongListData } =
-  storeToRefs(SongPersongStore);
+const {
+  Type,
+  area,
+  initial,
+  SongPersongListData,
+  IsShowLoading,
+  SongPersonglimit,
+  SongPersongoffset,
+} = storeToRefs(SongPersongStore);
 const TypeNavRef = ref('-1');
 const areaNavRef = ref('-1');
 const letterNavRef = ref('-1');
-onMounted(() => {
+const images = ref<HTMLImageElement[]>([]);
+onMounted(async () => {
   SongPersongStore.fetchGetSongPersong();
+  // 预加载函数
+  await preloadImages(SongPersongListData);
+  SongPersonglimit.value = 33;
+  SongPersongoffset.value = 0;
 });
+async function preloadImages(fileList: any): Promise<void> {
+  if (!Array.isArray(fileList)) {
+    fileList = Array.from(fileList);
+  }
+  const promises: Promise<void>[] = fileList.map((element: any) => {
+    return new Promise<void>((resolve) => {
+      let img = new Image();
+      img.src = element.picUrl;
+      img.onload = () => {
+        images.value.push(img);
+        resolve();
+      };
+    });
+  });
+  await Promise.all(promises);
+}
 const handelChangeTypeValue = (item: string) => {
   Type.value = item;
   TypeNavRef.value = item;

@@ -1,11 +1,19 @@
 import wfrequest from '.';
-export function GetSongPersong(type: string, area: string, initial: string) {
+export function GetSongPersong(
+  type: string,
+  area: string,
+  initial: string,
+  offset: number,
+  limit: number,
+) {
   return wfrequest.get({
-    url: '/top/artists',
+    url: '/artist/list',
     params: {
       type,
       area,
       initial,
+      offset,
+      limit,
     },
   });
 }

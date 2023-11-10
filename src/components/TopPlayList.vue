@@ -9,7 +9,7 @@
       <div class="item">
         <div class="song">
           <div class="imgBaox">
-            <img :src="item.al.picUrl" alt="" />
+            <img v-lazy="item.al.picUrl" alt="" />
           </div>
           <div class="info">
             <div class="name">

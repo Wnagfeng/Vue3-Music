@@ -34,11 +34,17 @@ import SideBar from './views/SideBar.vue';
 import LoginAndSearchVue from './components/LoginAndSearch.vue';
 import HomSvgVue from './components/HomSvg.vue';
 import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+const Router = useRoute();
 import { storeToRefs } from 'pinia';
 import { useSongMapStore } from '@/stores/SongMapStore';
+import { UseSongPersongStore } from './stores/SongPersongStore';
 const mapStore = useSongMapStore();
+const SongPersongStore = UseSongPersongStore();
 const { offset, limit } = storeToRefs(mapStore);
+const { SongPersonglimit, SongPersongoffset } = storeToRefs(SongPersongStore);
 const isShowLoadingState = ref(false);
+
 setTimeout(() => {
   isShowLoadingState.value = true;
 }, 4900);
@@ -47,11 +53,19 @@ const scrolling = (e: any) => {
   const clientHeight = e.target.clientHeight;
   const scrollHeight = e.target.scrollHeight;
   const scrollTop = e.target.scrollTop;
-
   if (scrollTop + clientHeight >= scrollHeight) {
+    // 歌单加载更多
     offset.value = limit.value;
     limit.value = limit.value + 54;
-    mapStore.FetchGetTopPlaylists();
+    // 歌手加载更多
+    SongPersongoffset.value = SongPersonglimit.value;
+    SongPersonglimit.value = SongPersonglimit.value + 33;
+    if (SongPersonglimit.value > 99 && SongPersongoffset.value > 66) {
+      SongPersonglimit.value = 99;
+      SongPersongoffset.value = 66;
+    }
+    mapStore.FetchGetTopPlaylists(); //发请求拿数据
+    SongPersongStore.fetchGetSongPersong(); //
   } else {
   }
 };

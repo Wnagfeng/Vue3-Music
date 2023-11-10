@@ -7,15 +7,29 @@ export const UseSongPersongStore = defineStore('SongPersongStore', {
       Type: '-1', //类型
       area: '-1', //类型
       initial: '-1', //热门排序
-      limit: '31',
-      offset: '0',
+      SongPersonglimit: 33,
+      SongPersongoffset: 0,
       SongPersongListData: [],
+      IsShowLoading: false,
     };
   },
   actions: {
     async fetchGetSongPersong() {
-      const res = await GetSongPersong(this.Type, this.area, this.initial);
-      this.SongPersongListData = res.artists;
+      const res = await GetSongPersong(
+        this.Type,
+        this.area,
+        this.initial,
+        this.SongPersongoffset,
+        this.SongPersonglimit,
+      );
+      this.SongPersongListData = [];
+      if (res.code == 200) {
+        this.IsShowLoading = true;
+      }
+      const NewData = res.artists;
+      const OldData = this.SongPersongListData;
+      const result = [...OldData, ...NewData];
+      this.SongPersongListData = result;
     },
   },
 });

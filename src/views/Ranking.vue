@@ -70,7 +70,7 @@
               :class="[selectOneIndex === index ? 'active' : '']"
             >
               <div class="img">
-                <img :src="item.coverImgUrl" alt="" />
+                <img v-lazy="item.coverImgUrl" alt="" />
               </div>
               <div class="info">
                 <div class="item">{{ item.name }}</div>
@@ -90,7 +90,7 @@
               :class="[selectTwoIndex === index ? 'active' : '']"
             >
               <div class="img">
-                <img :src="item.coverImgUrl" alt="" />
+                <img v-lazy="item.coverImgUrl" alt="" />
               </div>
               <div class="info">
                 <div class="item">{{ item.name }}</div>

@@ -1,6 +1,6 @@
 <template>
   <div class="LoadingWrapper">
-    <h1>
+    <!-- <h1>
       <span>玩</span>
       <span>命</span>
       <span>加</span>
@@ -9,7 +9,7 @@
       <span>.</span>
       <span>.</span>
       <span>.</span>
-    </h1>
+    </h1> -->
 
     <div class="google-loader">
       <span></span>

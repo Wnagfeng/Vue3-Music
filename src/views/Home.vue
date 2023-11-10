@@ -7,7 +7,7 @@
           <el-carousel :interval="4000" type="card" height="200px">
             <el-carousel-item v-for="item in HomeStore.banners" :key="item">
               <div class="imgbox">
-                <img :src="item.imageUrl" alt="" />
+                <img v-lazy="item.imageUrl" alt="" />
               </div>
             </el-carousel-item>
           </el-carousel>
@@ -97,7 +97,7 @@
                 <div class="imgsWiper">
                   <div class="SwiperimgBox">
                     <div class="imgWrapper">
-                      <img :src="iten.picUrl" alt="" />
+                      <img v-lazy="iten.picUrl" alt="" />
                     </div>
                   </div>
                 </div>

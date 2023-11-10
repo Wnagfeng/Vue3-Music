@@ -2,7 +2,7 @@
   <div class="AlbumDetaileWrapper">
     <div class="topInfo BaseWrapper">
       <div class="imgBox">
-        <img :src="Data.blurPicUrl" alt="" />
+        <img v-lazy="Data.blurPicUrl" alt="" />
       </div>
       <div class="info BaseWrapper">
         <div class="name">

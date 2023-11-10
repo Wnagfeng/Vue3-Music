@@ -2,7 +2,7 @@
   <div class="SongMapDetaileWrapper">
     <div class="TopInfo BaseWrapper">
       <div class="imgBox">
-        <img :src="playlist.backgroundCoverUrl" alt="" />
+        <img v-lazy="playlist.backgroundCoverUrl" alt="" />
       </div>
       <div class="SongMapInfo">
         <div class="name">{{ playlist.name }}</div>

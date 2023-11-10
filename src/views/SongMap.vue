@@ -62,6 +62,8 @@ const SlelectINfo = ref('华语');
 onMounted(() => {
   SongMapStore.FetchGetTopPlaylists();
   SongMapStore.FetchGetcatlistData();
+  offset.value = 0;
+  limit.value = 54;
 });
 onBeforeUnmount(() => {});
 
