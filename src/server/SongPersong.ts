@@ -17,3 +17,12 @@ export function GetSongPersong(
     },
   });
 }
+
+export function GetSongPersongDetaileSongListData(id: string) {
+  return wfrequest.get({
+    url: '/artists',
+    params: {
+      id,
+    },
+  });
+}

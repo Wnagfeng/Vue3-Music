@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
-import { GetSongPersong } from '@/server/SongPersong';
+import {
+  GetSongPersong,
+  GetSongPersongDetaileSongListData,
+} from '@/server/SongPersong';
 import type { SongPersongData } from './Types/SongPersong.type';
 export const UseSongPersongStore = defineStore('SongPersongStore', {
   state: (): SongPersongData => {
@@ -11,6 +14,7 @@ export const UseSongPersongStore = defineStore('SongPersongStore', {
       SongPersongoffset: 0,
       SongPersongListData: [],
       IsShowLoading: false,
+      SongPersongDetaileSongListData: {},
     };
   },
   actions: {
@@ -30,6 +34,13 @@ export const UseSongPersongStore = defineStore('SongPersongStore', {
       const OldData = this.SongPersongListData;
       const result = [...OldData, ...NewData];
       this.SongPersongListData = result;
+    },
+    async FetchGetSongPersongDetaileSongListData(id: string) {
+      const res = await GetSongPersongDetaileSongListData(id);
+      const artist = res.artist;
+      const hotSongs = res.hotSongs;
+      this.SongPersongDetaileSongListData = {};
+      this.SongPersongDetaileSongListData = { artist, hotSongs };
     },
   },
 });

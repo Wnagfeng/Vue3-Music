@@ -84,6 +84,8 @@ onMounted(() => {});
   display: flex;
   width: 100vw;
   height: 100vh;
+  max-width: 1920px;
+  max-height: 1080px;
 
   .gradient-text {
     background: linear-gradient(

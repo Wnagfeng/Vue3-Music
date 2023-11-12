@@ -58,7 +58,10 @@
       </div>
       <div class="SongPersongList">
         <template v-for="(item, index) in SongPersongListData" :key="index">
-          <div class="SongPersongData">
+          <div
+            class="SongPersongData"
+            @click="HandelSongPersonLiteItemClick(item)"
+          >
             <div class="songPerdetaile">
               <div class="img">
                 <img v-lazy="item.picUrl" alt="" ref="images" />
@@ -91,7 +94,7 @@ import { TypeNav, areaNav, letterNav } from '@/data/SongPersongNavs';
 import { useNumberFormat } from '@/utils/FormatData';
 import { onMounted, ref } from 'vue';
 import Loading from '@/components/Loading.vue';
-
+import { useRouter } from 'vue-router';
 const SongPersongStore = UseSongPersongStore();
 const {
   Type,
@@ -106,6 +109,7 @@ const TypeNavRef = ref('-1');
 const areaNavRef = ref('-1');
 const letterNavRef = ref('-1');
 const images = ref<HTMLImageElement[]>([]);
+const Router = useRouter();
 onMounted(async () => {
   SongPersongStore.fetchGetSongPersong();
   // 预加载函数
@@ -143,6 +147,9 @@ const handelChangeLetterValue = (item: string) => {
   initial.value = item;
   letterNavRef.value = item;
   SongPersongStore.fetchGetSongPersong();
+};
+const HandelSongPersonLiteItemClick = (item: any) => {
+  Router.push({ path: `/SongPersongDetaile/${item.id}` });
 };
 </script>
 <style scoped lang="less">
