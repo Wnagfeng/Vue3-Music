@@ -28,6 +28,21 @@
     <div class="SongListWrapper BaseWrapper">
       <SongList :-itemdata="SongPersongDetaileSongListData.hotSongs"></SongList>
     </div>
+    <div class="SongMvListWrapper BaseWrapper">
+      <h1>Mv列表</h1>
+      <template v-if="Mvdata.length">
+        <div class="MvbOx">
+          <template v-for="(item, index) in Mvdata" :key="index">
+            <div class="MV">
+              <MustNewMvItem :Itemdata="item"></MustNewMvItem>
+            </div>
+          </template>
+        </div>
+      </template>
+      <template v-else>
+        <h1 class="isEmpty">暂时为空 等待歌手发布</h1>
+      </template>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -36,12 +51,15 @@ import { onMounted } from 'vue';
 import { UseSongPersongStore } from '@/stores/SongPersongStore';
 import { storeToRefs } from 'pinia';
 import SongList from '@/components/SongList.vue';
+import MustNewMvItem from '@/components/MustNewMvItem.vue';
 const Router = useRoute();
 const SongPersongStore = UseSongPersongStore();
-const { SongPersongDetaileSongListData } = storeToRefs(SongPersongStore);
+const { SongPersongDetaileSongListData, Mvdata } =
+  storeToRefs(SongPersongStore);
 onMounted(() => {
   const Id = String(Router.params.id);
   SongPersongStore.FetchGetSongPersongDetaileSongListData(Id);
+  SongPersongStore.FetchGetSongPersonDetaileMvData(Id);
 });
 </script>
 <style scoped lang="less">
@@ -54,6 +72,7 @@ onMounted(() => {
   box-shadow: 0 20px 27px #0000000d;
 }
 .SongPersongDetaileWrapper {
+  padding: 20px;
   .TopInfo {
     width: 100%;
 
@@ -102,6 +121,24 @@ onMounted(() => {
         transition: all 0.5s;
         width: 100%;
         height: 100%;
+      }
+    }
+  }
+  .SongMvListWrapper {
+    .isEmpty {
+      text-align: center;
+      color: #909090;
+    }
+    display: flex;
+    h1 {
+      margin-left: 20px;
+    }
+    flex-direction: column;
+    .MvbOx {
+      display: flex;
+      flex-wrap: wrap;
+      .MV {
+        margin-left: 20px;
       }
     }
   }

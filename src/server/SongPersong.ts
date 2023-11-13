@@ -26,3 +26,11 @@ export function GetSongPersongDetaileSongListData(id: string) {
     },
   });
 }
+export function GetSongPersonDetaileMvData(id: string) {
+  return wfrequest.get({
+    url: '/artist/mv',
+    params: {
+      id,
+    },
+  });
+}

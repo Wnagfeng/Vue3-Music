@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import {
   GetSongPersong,
   GetSongPersongDetaileSongListData,
+  GetSongPersonDetaileMvData,
 } from '@/server/SongPersong';
 import type { SongPersongData } from './Types/SongPersong.type';
 export const UseSongPersongStore = defineStore('SongPersongStore', {
@@ -15,6 +16,7 @@ export const UseSongPersongStore = defineStore('SongPersongStore', {
       SongPersongListData: [],
       IsShowLoading: false,
       SongPersongDetaileSongListData: {},
+      Mvdata: [],
     };
   },
   actions: {
@@ -41,6 +43,10 @@ export const UseSongPersongStore = defineStore('SongPersongStore', {
       const hotSongs = res.hotSongs;
       this.SongPersongDetaileSongListData = {};
       this.SongPersongDetaileSongListData = { artist, hotSongs };
+    },
+    async FetchGetSongPersonDetaileMvData(id: string) {
+      const res = await GetSongPersonDetaileMvData(id);
+      this.Mvdata = res.mvs;
     },
   },
 });

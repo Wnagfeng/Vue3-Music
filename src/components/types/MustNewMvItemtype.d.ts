@@ -19,5 +19,6 @@ export interface MustNewMvItem {
     mark: number;
     subed: boolean;
     artists: Artist[];
+    imgurl?: string;
   };
 }

@@ -39,9 +39,12 @@ const Router = useRoute();
 import { storeToRefs } from 'pinia';
 import { useSongMapStore } from '@/stores/SongMapStore';
 import { UseSongPersongStore } from './stores/SongPersongStore';
+import { UseMvStore } from './stores/MvStore';
 const mapStore = useSongMapStore();
 const SongPersongStore = UseSongPersongStore();
+const MvStore = UseMvStore();
 const { offset, limit } = storeToRefs(mapStore);
+const { MVlimit, MVoffset } = storeToRefs(MvStore);
 const { SongPersonglimit, SongPersongoffset } = storeToRefs(SongPersongStore);
 const isShowLoadingState = ref(false);
 
@@ -60,12 +63,16 @@ const scrolling = (e: any) => {
     // 歌手加载更多
     SongPersongoffset.value = SongPersonglimit.value;
     SongPersonglimit.value = SongPersonglimit.value + 33;
+    // Mv加载更多
+    MVoffset.value = MVlimit.value;
+    MVlimit.value = MVlimit.value + 30;
     if (SongPersonglimit.value > 99 && SongPersongoffset.value > 66) {
       SongPersonglimit.value = 99;
       SongPersongoffset.value = 66;
     }
     mapStore.FetchGetTopPlaylists(); //发请求拿数据
-    SongPersongStore.fetchGetSongPersong(); //
+    SongPersongStore.fetchGetSongPersong();
+    MvStore.fetchGetMvListdata();
   } else {
   }
 };

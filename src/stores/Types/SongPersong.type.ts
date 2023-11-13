@@ -192,6 +192,35 @@ export interface SongPersongDetaileSongListData {
   artist?: Artist;
   hotSongs?: HotSong[];
 }
+export interface Artist {
+  img1v1Id: number;
+  topicPerson: number;
+  alias: any[];
+  musicSize: number;
+  img1v1Url: string;
+  albumSize: number;
+  trans: string;
+  picUrl: string;
+  briefDesc: string;
+  picId: number;
+  name: string;
+  id: number;
+  img1v1Id_str: string;
+}
+
+export interface Mvdata {
+  id: number;
+  name: string;
+  status: number;
+  artist: Artist;
+  imgurl: string;
+  imgurl16v9: string;
+  artistName: string;
+  duration: number;
+  playCount: number;
+  publishTime: string;
+  subed: boolean;
+}
 export interface SongPersongData {
   Type: string; //类型
   area: string; //类型
@@ -201,4 +230,5 @@ export interface SongPersongData {
   SongPersongListData: SongPersongListData[];
   IsShowLoading: boolean;
   SongPersongDetaileSongListData: SongPersongDetaileSongListData;
+  Mvdata: Mvdata[];
 }
