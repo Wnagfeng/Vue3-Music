@@ -8,6 +8,7 @@ import SongPersongVue from '@/views/SongPersong.vue';
 import SongMapDetaile from '@/views/SongMapDetaile.vue';
 import AlbumDetaile from '@/views/AlbumDetaile.vue';
 import SongPersongDetaileVue from '@/views/SongPersongDetaile.vue';
+import PLaComponent from '@/components/PlayComonent.vue';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -60,6 +61,11 @@ const router = createRouter({
       path: '/SongPersongDetaile/:id',
       name: 'SongPersongDetaileVue',
       component: SongPersongDetaileVue,
+    },
+    {
+      path: '/PLaComponent/:id',
+      name: 'PLaComponent',
+      component: PLaComponent,
     },
   ],
 });

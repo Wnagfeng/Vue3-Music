@@ -16,7 +16,11 @@
         </div>
       </div>
       <div class="songList">
-        <el-table :data="props.Itemdata" style="width: 100%">
+        <el-table
+          :data="props.Itemdata"
+          style="width: 100%"
+          @cell-click="handelCellClick"
+        >
           <el-table-column label="序号" width="80">
             <template v-slot="row">
               <div class="imgbox" @click="handelPlaySong(row)">
@@ -69,16 +73,24 @@
   </template>
 </template>
 <script setup lang="ts">
-import { toRaw } from 'vue';
 import type { Track } from './types/SongList';
+import { useRouter } from 'vue-router';
 import { convertMillisecondsToMinutesAndSeconds } from '../utils/FormatSongTime';
 import Loading from '@/components/Loading.vue';
+const Router = useRouter();
 const props = defineProps<Track>();
 const handelPlaySong = (data: any) => {
-  console.log('点击了播放', data.row.id);
+  // 直接播放不跳转
+  const Id = data.row.id;
+  Router.push({ path: `/PLaComponent/${Id}` });
 };
 const handelAddSongList = (data: any) => {
   console.log('点击了加入播放', data);
+};
+const handelCellClick = (row: any) => {
+  // 进入歌曲详情不播放
+  const Id = row.id;
+  Router.push({ path: `/PLaComponent/${Id}` });
 };
 </script>
 <style scoped lang="less">

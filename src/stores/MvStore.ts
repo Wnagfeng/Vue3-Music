@@ -22,7 +22,6 @@ export const UseMvStore = defineStore('MvStore', {
       const offset = this.MVoffset;
       const res = await GetMvListdata(area, order, type, limit, offset);
       this.Mvdata = res.data;
-      console.log(res);
     },
   },
 });
