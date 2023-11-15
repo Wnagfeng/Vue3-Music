@@ -55,7 +55,10 @@
     <div class="MvListWrapperr BaseWrapper">
       <template v-for="(item, index) in Mvdata" :key="index">
         <div class="MvListItem">
-          <MustNewMvItem :Itemdata="item"></MustNewMvItem>
+          <MustNewMvItem
+            :Itemdata="item"
+            @click="HandelMvItemClick(item.id)"
+          ></MustNewMvItem>
         </div>
       </template>
     </div>
@@ -63,6 +66,7 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import SongmapNavs from '../data/MvNavs.json';
 import { storeToRefs } from 'pinia';
 import { UseMvStore } from '@/stores/MvStore';
@@ -73,6 +77,7 @@ const SlelectINfo = ref('全部');
 const SlelectINfoTwo = ref('上升最快');
 const SlelectINfoThree = ref('全部');
 const ISShowSelectState = ref(false);
+const Router = useRouter();
 onMounted(() => {
   Mvstore.fetchGetMvListdata();
 });
@@ -102,6 +107,10 @@ const handleSelectdisNas = (name: string) => {
   MVlimit.value = 30;
   SlelectINfoThree.value = name;
   Mvstore.fetchGetMvListdata();
+};
+const HandelMvItemClick = (id: any) => {
+  const Id = id;
+  Router.push({ path: `/Mvdetaile/${Id}` });
 };
 </script>
 <style scoped lang="less">
