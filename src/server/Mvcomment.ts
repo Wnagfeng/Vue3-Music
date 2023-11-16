@@ -4,6 +4,8 @@ export function GetMvCommentListData(
   offset: number,
   limit: number,
 ) {
+  console.log(limit);
+  console.log(offset);
   return wfrequest.get({
     url: '/comment/mv',
     params: {

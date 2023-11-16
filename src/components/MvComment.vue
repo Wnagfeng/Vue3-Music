@@ -25,56 +25,69 @@
         </div>
       </div>
     </div>
-    <div class="CommentItem">
-      <div class="CommentItemInner">
-        <div class="cover">
-          <img src="../assets/img/头像.jpg" alt="" />
-        </div>
-        <div class="info">
-          <div class="name">汪峰</div>
-          <div class="content">汪枫牛逼</div>
-          <div class="bottominfo">
-            <div class="left">
-              <div class="time">2023年11月16日16:11:10</div>
-            </div>
-            <div class="right">
-              <div class="count">(999+)</div>
-              <div class="icon" @click="HandelIconCLick">
-                <img src="../assets/img/CommentIcon.png" alt="" />
+    <template v-for="item in props.ItemData" :key="item.id">
+      <div class="CommentItem">
+        <div class="CommentItemInner">
+          <div class="cover">
+            <img :src="item.user.avatarUrl" alt="" />
+          </div>
+          <div class="info">
+            <div class="name">{{ item.user.nickname }}</div>
+            <div class="content">{{ item.content }}</div>
+            <div class="bottominfo">
+              <div class="left">
+                <div class="time">{{ item.time }}</div>
+              </div>
+              <div class="right">
+                <div class="count">({{ item.beReplied.length }})</div>
+                <div class="icon" @click="HandelIconCLick">
+                  <img src="../assets/img/CommentIcon.png" alt="" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="ReplayBox" ref="ReplayBox">
-        <div class="State">我回复@周杰伦：</div>
-        <div class="input">
-          <textarea
-            name="leave_msg"
-            placeholder="公主王子请评论....."
-            style="resize: none"
-          ></textarea>
-          <div class="Click">
-            <div class="RoleCount">0/140</div>
-            <button>发表</button>
+        <div class="ReplayBox" ref="ReplayBoxRef">
+          <div class="State">我回复@周杰伦：</div>
+          <div class="input">
+            <textarea
+              name="leave_msg"
+              placeholder="公主王子请评论....."
+              style="resize: none"
+            ></textarea>
+            <div class="Click">
+              <div class="RoleCount">0/140</div>
+              <button>发表</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { Itemdata } from './types/MvComment';
-const IsShowReplayComment = ref(false);
 const props = defineProps<Itemdata>();
-const ReplayBox = ref('');
-const handelChangeIsshowReplayState = () => {
-  IsShowReplayComment.value = !IsShowReplayComment.value;
+const ReplayBoxRef = ref<HTMLDivElement>();
+const HandelIconCLick = (event: any) => {
+  /* 
+  closest()
+  方法获取最接近被点击的CommentIcon元素的CommentItem元素，并将其存储在
+  commentItem
+   */
+  const commentItem = event.target.closest('.CommentItem');
+  const replayBox = commentItem.querySelector('.ReplayBox');
+  /* 
+  querySelector()
+  方法在CommentItem元素中查找ReplayBox元素，并将其存储在
+  replayBox
+   */
+  const ClassS = replayBox.classList;
+  if (ClassS) {
+    ClassS.toggle('Show');
+  }
 };
-// const HandelIconCLick=()=>{
-//   ReplayBox.value.
-// }
 </script>
 <style scoped lang="less">
 .MVCommentWrapper {
@@ -193,13 +206,6 @@ const handelChangeIsshowReplayState = () => {
               margin-left: 18px;
             }
           }
-          .right:active {
-            color: #000000;
-            .CommentItem .ReplayBox {
-              background-color: #000000;
-              display: none;
-            }
-          }
         }
       }
     }
@@ -209,7 +215,9 @@ const handelChangeIsshowReplayState = () => {
       margin-top: 20px;
       margin: 0 auto;
       width: 95%;
-      height: 150px;
+      height: 0;
+      opacity: 0;
+      transition: height 0.3s ease, opacity 0.3s ease;
       background-color: #d8d8d8;
       .State {
         color: #909090;
@@ -244,6 +252,10 @@ const handelChangeIsshowReplayState = () => {
           margin-left: 12px;
         }
       }
+    }
+    .Show {
+      height: auto;
+      opacity: 1;
     }
   }
 }

@@ -16,7 +16,30 @@
 
   总之，两侧留白是网页设计中非常重要的一个要素，可以使得网页更加易读、美观、优雅，同时也有利于响应式设计，使得网页可以适应不同尺寸的屏幕。
 
-# TS类型问题
+# 动态添加类名--MvComment.vue
 
-马勒戈壁没接触过过ts类型接口要补一补ts 的类型问题了
+```ts
+const ReplayBoxRef = ref<HTMLDivElement>();
+const HandelIconCLick = (event: any) => {
+  /* 
+  closest()
+  方法获取最接近被点击的CommentIcon元素的CommentItem元素，并将其存储在
+  commentItem
+   */
+  const commentItem = event.target.closest('.CommentItem');
+  const replayBox = commentItem.querySelector('.ReplayBox');
+  /* 
+  querySelector()
+  方法在CommentItem元素中查找ReplayBox元素，并将其存储在
+  replayBox
+   */
+  const ClassS = replayBox.classList;
+  if (ClassS) {
+    ClassS.toggle('Show');
+  }
+};
+//toggle() 是Element.classList中的一个方法，可以在元素的class属性中切换指定的类名，如果该类名已经存在则移除，否则添加
+```
+
+
 
