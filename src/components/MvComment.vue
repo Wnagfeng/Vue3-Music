@@ -29,14 +29,14 @@
       <div class="CommentItem">
         <div class="CommentItemInner">
           <div class="cover">
-            <img :src="item.user.avatarUrl" alt="" />
+            <img v-lazy="item.user.avatarUrl" alt="" />
           </div>
           <div class="info">
             <div class="name">{{ item.user.nickname }}</div>
             <div class="content">{{ item.content }}</div>
             <div class="bottominfo">
               <div class="left">
-                <div class="time">{{ item.time }}</div>
+                <div class="time">{{ FormatTime(item.time) }}</div>
               </div>
               <div class="right">
                 <div class="count">({{ item.beReplied.length }})</div>
@@ -70,6 +70,7 @@ import { ref } from 'vue';
 import type { Itemdata } from './types/MvComment';
 const props = defineProps<Itemdata>();
 const ReplayBoxRef = ref<HTMLDivElement>();
+import { FormatTime } from '../utils/FormatTime';
 const HandelIconCLick = (event: any) => {
   /* 
   closest()
