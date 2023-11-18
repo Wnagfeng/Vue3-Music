@@ -16,12 +16,14 @@
       <div class="input">
         <textarea
           name="leave_msg"
+          maxlength="140"
           placeholder="公主王子请评论....."
           style="resize: none"
+          v-model="content"
         ></textarea>
         <div class="Click">
-          <button>发表</button>
-          <div class="RoleCount">0/140</div>
+          <button @click="HandelCommentClcik">发表</button>
+          <div class="RoleCount">{{ InputCount }}/140</div>
         </div>
       </div>
     </div>
@@ -39,8 +41,8 @@
                 <div class="time">{{ FormatTime(item.time) }}</div>
               </div>
               <div class="right">
-                <div class="count">({{ item.beReplied.length }})</div>
-                <div class="icon" @click="HandelIconCLick">
+                <div class="count">({{ item.replyCount }})</div>
+                <div class="icon" @click="HandelIconCLick($event, item.user)">
                   <img src="../assets/img/CommentIcon.png" alt="" />
                 </div>
               </div>
@@ -48,38 +50,61 @@
           </div>
         </div>
         <div class="ReplayBox" ref="ReplayBoxRef">
-          <div class="State">我回复@周杰伦：</div>
+          <div class="State">我回复@{{ ReplayUserData.nickname }}：</div>
           <div class="input">
             <textarea
-              name="leave_msg"
-              placeholder="公主王子请评论....."
+              maxlength="140"
+              name="leave_msg1"
+              placeholder="公主王子请回复评论....."
               style="resize: none"
+              v-model="Replaycontent"
             ></textarea>
             <div class="Click">
-              <div class="RoleCount">0/140</div>
+              <div class="RoleCount">{{ inputCount }}/140</div>
               <button>发表</button>
             </div>
           </div>
         </div>
       </div>
     </template>
+    <div class="pagination">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="totalNumber"
+        @size-change="HandelSizeChange"
+        @current-change="HandelCurrentChange"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, watchEffect, onMounted } from 'vue';
 import type { Itemdata } from './types/MvComment';
-const props = defineProps<Itemdata>();
-const ReplayBoxRef = ref<HTMLDivElement>();
 import { FormatTime } from '../utils/FormatTime';
-const HandelIconCLick = (event: any) => {
-  /* 
+import { UseMvcommentStore } from '@/stores/MvcommentStore';
+import { storeToRefs } from 'pinia';
+const props = defineProps<Itemdata>();
+const totalNumber = ref(1234);
+const ReplayBoxRef = ref<HTMLDivElement>();
+
+const Replaycontent = ref<string>(''); //回复的内容
+const inputCount = ref<number>(0); //回复的字数
+
+const InputCount = ref<number>(0); //评论的字数
+const content = ref<string>(''); //评论的内容
+
+const MvcommentStore = UseMvcommentStore();
+const { ReplayUserData } = storeToRefs(MvcommentStore);
+const HandelIconCLick = (event: any, Userdata: any) => {
+  /*
   closest()
   方法获取最接近被点击的CommentIcon元素的CommentItem元素，并将其存储在
   commentItem
    */
   const commentItem = event.target.closest('.CommentItem');
   const replayBox = commentItem.querySelector('.ReplayBox');
-  /* 
+  /*
   querySelector()
   方法在CommentItem元素中查找ReplayBox元素，并将其存储在
   replayBox
@@ -88,7 +113,23 @@ const HandelIconCLick = (event: any) => {
   if (ClassS) {
     ClassS.toggle('Show');
   }
+  ReplayUserData.value = Userdata;
+  console.log(Userdata);
 };
+const HandelSizeChange = (value: number) => {
+  console.log(value);
+};
+const HandelCurrentChange = (value: number) => {
+  console.log(value);
+};
+const HandelCommentClcik = () => {
+  const contentData = content.value;
+  MvcommentStore.fetchpublicationComment(contentData);
+};
+watchEffect(() => {
+  inputCount.value = Replaycontent.value?.trim().length;
+  InputCount.value = content.value?.trim().length;
+});
 </script>
 <style scoped lang="less">
 .MVCommentWrapper {
@@ -258,6 +299,12 @@ const HandelIconCLick = (event: any) => {
       height: auto;
       opacity: 1;
     }
+  }
+  .pagination {
+    margin-top: 80px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
 }
 </style>

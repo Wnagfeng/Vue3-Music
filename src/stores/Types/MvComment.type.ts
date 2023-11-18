@@ -195,7 +195,8 @@ export interface Comment {
 
 export interface MvCommentDatatype {
   id: string;
-  MvCommentlimit: number;
-  MvCommentoffset: number;
   CommentListData: Comment[];
+  ReplayUserData: any; //回复对象的数据
+  pageNo: number;
+  type: number;
 }
