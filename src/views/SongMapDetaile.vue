@@ -13,6 +13,7 @@
     <div class="SongMapListData BaseWrapper">
       <SongList :Itemdata="playlist.tracks"></SongList>
     </div>
+    <div class="CommenWrapper"></div>
   </div>
 </template>
 <script setup lang="ts">
@@ -21,13 +22,17 @@ import { onMounted, ref } from 'vue';
 import { useSongMapStore } from '@/stores/SongMapStore';
 import { storeToRefs } from 'pinia';
 import SongList from '@/components/SongList.vue';
+import { UseMvcommentStore } from '@/stores/MvcommentStore';
+import MvComment from '@/components/MvComment.vue';
 const SongMapStore = useSongMapStore();
+const MvcommentStore = UseMvcommentStore();
+const { id, CommentListData, type } = storeToRefs(MvcommentStore);
 const { playlist } = storeToRefs(SongMapStore);
 const router = useRouter();
 const SongMapID = ref();
 onMounted(() => {
-  const id = router.currentRoute.value.params.id;
-  const Id = Number(id);
+  const Aid = router.currentRoute.value.params.id;
+  const Id = Number(Aid);
   SongMapID.value = id;
   SongMapStore.FetchGetPayListToTopPlayListsId(Id);
 });

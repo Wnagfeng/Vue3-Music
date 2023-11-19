@@ -53,8 +53,14 @@ import { storeToRefs } from 'pinia';
 import { localCache } from '@/utils/Cache';
 import { ElMessage } from 'element-plus';
 const LoginStore = useLoginstore();
-const { isShowLoginState, isLoadingSuccess, UserCover, UserName, Profile } =
-  storeToRefs(LoginStore);
+const {
+  isShowLoginState,
+  isLoadingSuccess,
+  UserCover,
+  UserName,
+  Profile,
+  cookie,
+} = storeToRefs(LoginStore);
 const SearchValue = ref('');
 const handelLoginClick = () => {
   LoginStore.changeIsloginState();
@@ -66,13 +72,16 @@ const handelExitLoging = () => {
   });
   localStorage.setItem('WFMusictoken', '');
   localCache.setCache('WFMUSICPROFILE', {});
+  localStorage.setItem('WFMusiceCookie', '');
   isLoadingSuccess.value = false;
 };
 onMounted(() => {
   const info = localCache.getCache('WFMUSICPROFILE');
-  if (info !== undefined) {
+  const Storagecookie = localStorage.getItem('WFMusiceCookie');
+  if (info !== undefined && Storagecookie) {
     UserName.value = info.nickname;
     UserCover.value = info.avatarUrl;
+    cookie.value = Storagecookie;
     if (UserName.value !== undefined && UserCover.value !== undefined) {
       isLoadingSuccess.value = true;
     }

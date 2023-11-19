@@ -18,7 +18,7 @@
           <img src="../assets/img/Searchcountent.png" alt="" />
           <template v-if="MvInfo.shareCount">
             <div class="info">
-              {{ useNumberFormat(MvInfo.shareCount) }}
+              {{ useNumberFormat(totalCount) }}
             </div>
           </template>
         </div>
@@ -51,7 +51,7 @@ import MvComment from './MvComment.vue';
 const PlayMvStore = UsePlayMvStore();
 const MvcommentStore = UseMvcommentStore();
 const { MvInfo, MvUrl } = storeToRefs(PlayMvStore);
-const { CommentListData, id } = storeToRefs(MvcommentStore);
+const { CommentListData, id, totalCount } = storeToRefs(MvcommentStore);
 const Router = useRoute();
 onMounted(() => {
   const Id = String(Router.params.id);

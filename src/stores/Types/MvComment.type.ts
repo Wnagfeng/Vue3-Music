@@ -199,4 +199,8 @@ export interface MvCommentDatatype {
   ReplayUserData: any; //回复对象的数据
   pageNo: number;
   type: number;
+  totalCount: number;
+  Cookie: string;
+  IsShowUserState: boolean;
+  ReplayCommentId: string;
 }

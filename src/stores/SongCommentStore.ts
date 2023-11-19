@@ -8,14 +8,14 @@ import mitt from 'mitt';
 import type { MvCommentDatatype } from './Types/MvComment.type';
 import { ElMessage } from 'element-plus';
 import { TheMvCommentEventBus } from '@/utils/EventBus';
-export const UseMvcommentStore = defineStore('MvcommentStore', {
+export const UseSongCommentStore = defineStore('SongCommentStore', {
   state: (): MvCommentDatatype => {
     return {
       id: '', //mvId
       CommentListData: [],
       ReplayUserData: {}, //回复对象的数据
       pageNo: 1, //当前页码
-      type: 1, //1是mv的评论
+      type: 0, //1是mv的评论
       totalCount: 0, //totalCount当前评论数量
       Cookie: '', //登录后拿到的Cookie
       IsShowUserState: false, //是否展示用户登录信息
@@ -37,11 +37,13 @@ export const UseMvcommentStore = defineStore('MvcommentStore', {
       this.totalCount = 0;
       this.CommentListData = res.data.comments;
       this.totalCount = res.data.totalCount;
+      console.log('歌曲数据', res.data.totalCount);
     },
     // 发布评论
     async fetchpublicationComment(content: string, cookie: string) {
       const id = this.id;
       const type = this.type;
+      console.log(type);
       const res = await publicationComment(id, type, content, cookie);
       if (res.code == 200) {
         // 发表成功后派出一个事件

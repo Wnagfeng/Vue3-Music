@@ -1,7 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
 import type { HYRequestConfig } from './type';
-
 // 拦截器: 蒙版Loading/token/修改配置
 
 /**
@@ -19,10 +18,10 @@ class HYRequest {
   // request实例 => axios的实例
   constructor(config: HYRequestConfig) {
     this.instance = axios.create(config);
-
     // 每个instance实例都添加拦截器
     this.instance.interceptors.request.use(
       (config) => {
+        config.withCredentials = true;
         // loading/token
         return config;
       },

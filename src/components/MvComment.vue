@@ -4,14 +4,19 @@
       <div class="Title">
         <div class="Text">
           <h1 class="CommentTitle">评论</h1>
-          <div class="CommentCount">共999条评论</div>
+          <div class="CommentCount">共{{ totalCount }}条评论</div>
         </div>
-        <div class="Userinfo">
-          <div class="userName">汪峰本枫</div>
-          <div class="UserCover">
-            <img src="../assets/img/头像.jpg" alt="" />
+        <template v-if="isLoadingSuccess">
+          <div class="Userinfo">
+            <div class="userName">{{ UserName }}</div>
+            <div class="UserCover">
+              <img v-lazy="UserCover" alt="" />
+            </div>
           </div>
-        </div>
+        </template>
+        <template v-else>
+          <div class="loginsatte" @click="HandelLoginCLick">登录后评论哦</div>
+        </template>
       </div>
       <div class="input">
         <textarea
@@ -42,7 +47,7 @@
               </div>
               <div class="right">
                 <div class="count">({{ item.replyCount }})</div>
-                <div class="icon" @click="HandelIconCLick($event, item.user)">
+                <div class="icon" @click="HandelIconCLick($event, item)">
                   <img src="../assets/img/CommentIcon.png" alt="" />
                 </div>
               </div>
@@ -61,7 +66,7 @@
             ></textarea>
             <div class="Click">
               <div class="RoleCount">{{ inputCount }}/140</div>
-              <button>发表</button>
+              <button @click="HandelReplayCommentClcik">回复</button>
             </div>
           </div>
         </div>
@@ -71,7 +76,8 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="totalNumber"
+        :total="totalCount"
+        :page-size="30"
         @size-change="HandelSizeChange"
         @current-change="HandelCurrentChange"
       />
@@ -83,9 +89,11 @@ import { ref, watch, watchEffect, onMounted } from 'vue';
 import type { Itemdata } from './types/MvComment';
 import { FormatTime } from '../utils/FormatTime';
 import { UseMvcommentStore } from '@/stores/MvcommentStore';
+import { useLoginstore } from '@/stores/LoginStore';
 import { storeToRefs } from 'pinia';
+import { ElMessage } from 'element-plus';
+import { TheMvCommentEventBus } from '@/utils/EventBus';
 const props = defineProps<Itemdata>();
-const totalNumber = ref(1234);
 const ReplayBoxRef = ref<HTMLDivElement>();
 
 const Replaycontent = ref<string>(''); //回复的内容
@@ -93,10 +101,15 @@ const inputCount = ref<number>(0); //回复的字数
 
 const InputCount = ref<number>(0); //评论的字数
 const content = ref<string>(''); //评论的内容
-
+// 实现了复用 明白了真谛 得到了真传 2023年11月19日18:09:34
+// 王红元(Coderwhy)徒弟--汪枫(Joon)
 const MvcommentStore = UseMvcommentStore();
-const { ReplayUserData } = storeToRefs(MvcommentStore);
-const HandelIconCLick = (event: any, Userdata: any) => {
+const { ReplayUserData, totalCount, IsShowUserState, ReplayCommentId, pageNo } =
+  storeToRefs(MvcommentStore);
+const LoginStore = useLoginstore();
+const { isLoadingSuccess, isShowLoginState, UserName, UserCover, cookie } =
+  storeToRefs(LoginStore);
+const HandelIconCLick = (event: any, ReplayCommentData: any) => {
   /*
   closest()
   方法获取最接近被点击的CommentIcon元素的CommentItem元素，并将其存储在
@@ -113,23 +126,81 @@ const HandelIconCLick = (event: any, Userdata: any) => {
   if (ClassS) {
     ClassS.toggle('Show');
   }
-  ReplayUserData.value = Userdata;
-  console.log(Userdata);
+  const CommentId = ReplayCommentData.commentId;
+  ReplayCommentId.value = CommentId;
 };
 const HandelSizeChange = (value: number) => {
   console.log(value);
 };
 const HandelCurrentChange = (value: number) => {
+  pageNo.value = value;
   console.log(value);
+  MvcommentStore.FetchGetMvCommentListData();
 };
 const HandelCommentClcik = () => {
+  if (!isLoadingSuccess) {
+    ElMessage({
+      message: '请先登录',
+      type: 'warning',
+    });
+    return;
+  }
+  if (InputCount.value == 0) {
+    ElMessage({
+      message: '请先输入内容',
+      type: 'warning',
+    });
+    return;
+  }
   const contentData = content.value;
-  MvcommentStore.fetchpublicationComment(contentData);
+  const Commencookie = cookie.value;
+  MvcommentStore.fetchpublicationComment(contentData, Commencookie);
+};
+
+const HandelReplayCommentClcik = () => {
+  // 判断用户有没有登录
+  if (!isLoadingSuccess) {
+    ElMessage({
+      message: '请先登录',
+      type: 'warning',
+    });
+    return;
+  }
+  if (inputCount.value == 0) {
+    ElMessage({
+      message: '请先输入回复内容',
+      type: 'warning',
+    });
+    return;
+  }
+  const CommentId = ReplayCommentId.value;
+  const ReplayCommentContent = Replaycontent.value;
+  const Cookie = cookie.value;
+  MvcommentStore.FecthReplayComment(ReplayCommentContent, Cookie, CommentId);
+};
+const HandelLoginCLick = () => {
+  isShowLoginState.value = true;
 };
 watchEffect(() => {
   inputCount.value = Replaycontent.value?.trim().length;
   InputCount.value = content.value?.trim().length;
 });
+// 监听评论成功函数
+const HandelPUSHCommentFunction = () => {
+  content.value = '';
+  // 重新获取数据
+  MvcommentStore.FetchGetMvCommentListData(); //--接口给的有问题 没办法分页 数据更新的慢 这行不写了
+  totalCount.value = totalCount.value + 1;
+  console.log('评论成功');
+};
+// 监听回复成功函数
+const HandelReplayCommentFUnction = () => {
+  Replaycontent.value = '';
+  MvcommentStore.FetchGetMvCommentListData();
+  console.log('回复成功');
+};
+TheMvCommentEventBus.on('PUSHCOMMENTSUCCESS', HandelPUSHCommentFunction);
+TheMvCommentEventBus.on('REPLAYCOMMENTSUCCESS', HandelReplayCommentFUnction);
 </script>
 <style scoped lang="less">
 .MVCommentWrapper {
@@ -137,6 +208,11 @@ watchEffect(() => {
   box-sizing: border-box;
   width: 100%;
   .TitleWrapper {
+    .loginsatte {
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
     .Title {
       .Text {
         display: flex;

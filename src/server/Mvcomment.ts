@@ -11,7 +11,14 @@ export function GetMvCommentListData(id: string, pageNo: number, type: number) {
   });
 }
 // 发表评论接口
-export function publicationComment(id: string, type: number, content: string) {
+export function publicationComment(
+  id: string,
+  type: number,
+  content: string,
+  cookie: string,
+) {
+  console.log(type);
+
   return wfrequest.get({
     url: '/comment',
     params: {
@@ -19,10 +26,36 @@ export function publicationComment(id: string, type: number, content: string) {
       t: 1,
       type,
       content,
+      cookie,
     },
-    headers:{
-      // Authorization:
-    }
   });
 }
-
+// 回复评论
+/**
+ *
+ * @param id 资源id
+ * @param type 资源类型
+ * @param content 回复内容
+ * @param cookie 用户的Cookie
+ * @param commentId 回复的id
+ * @returns
+ */
+export function ReplayComment(
+  id: string,
+  type: number,
+  content: string,
+  cookie: string,
+  commentId: string,
+) {
+  return wfrequest.get({
+    url: '/comment',
+    params: {
+      id,
+      type,
+      content,
+      cookie,
+      commentId,
+      t: 2,
+    },
+  });
+}

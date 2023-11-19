@@ -12,6 +12,7 @@ export const useLoginstore = defineStore('LoginStore', {
       UserName: '',
       UserCover: '',
       Profile: {},
+      cookie: '',
     };
   },
   actions: {
@@ -28,6 +29,8 @@ export const useLoginstore = defineStore('LoginStore', {
         // 登录成功需要展示用户信息
         localStorage.setItem('WFMusictoken', res.token);
         localCache.setCache('WFMUSICPROFILE', res.profile);
+        localStorage.setItem('WFMusiceCookie', res.cookie);
+        this.cookie = res.cookie;
         this.isLoadingSuccess = true;
         const { nickname, avatarUrl } = localCache.getCache('WFMUSICPROFILE');
         this.UserName = nickname;

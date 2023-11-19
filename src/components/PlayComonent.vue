@@ -97,28 +97,38 @@
         </div>
       </template>
     </div>
+    <div class="CommentWrapper">
+      <MvComment :ItemData="CommentListData"></MvComment>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UsePlayStore } from '@/stores/PlayStore';
+import { UseMvcommentStore } from '@/stores/MvcommentStore';
 import { storeToRefs } from 'pinia';
 import { FormatTime } from '@/utils/FormatTime';
 import SongList from './SongList.vue';
 import MustNewMvItem from './MustNewMvItem.vue';
 import PallistItem from './PallistItem.vue';
+import MvComment from './MvComment.vue';
 const PlayStore = UsePlayStore();
+const MvcommentStore = UseMvcommentStore();
 const { Songdata, LyricData, Songs, mvs, playlists } = storeToRefs(PlayStore);
+const { id, CommentListData, type } = storeToRefs(MvcommentStore);
 const Router = useRoute();
 const router = useRouter();
 onMounted(() => {
   const Id = String(Router.params.id);
+  id.value = Id;
+  type.value = 0;
   PlayStore.FetchgetSongdata(Id);
   PlayStore.FetchgetSonglyricData(Id);
   PlayStore.FetchgetsimisongData(Id);
   PlayStore.FetchGetsimiplaylist(Id);
   PlayStore.FetchGetsimimv(Id);
+  MvcommentStore.FetchGetMvCommentListData();
 });
 const handelPlayClick = () => {
   console.log('点击了播放');
@@ -164,8 +174,8 @@ const handelSongsPlayclick = (id: any) => {
         height: 100%;
         position: absolute;
         border-radius: 13px;
-        filter:blur(20px);
-        background-size:cover;
+        filter: blur(20px);
+        background-size: cover;
         img {
           width: 100%;
           height: 100%;
@@ -391,6 +401,10 @@ const handelSongsPlayclick = (id: any) => {
       flex-wrap: wrap;
       // justify-content: space-around;
     }
+  }
+  .CommentWrapper {
+    margin: 0 auto;
+    width: 80%;
   }
 }
 </style>

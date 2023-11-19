@@ -42,4 +42,5 @@ export interface LoginDataType {
   Profile: Profile | {};
   UserName: string;
   UserCover: string;
+  cookie: string;
 }
