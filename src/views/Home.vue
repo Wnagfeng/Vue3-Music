@@ -96,7 +96,7 @@
               <template v-for="(iten, index) in item" :key="index">
                 <div class="imgsWiper">
                   <div class="SwiperimgBox">
-                    <div class="imgWrapper">
+                    <div class="imgWrapper" @click="HandelSongPersongClick">
                       <img v-lazy="iten.picUrl" alt="" />
                     </div>
                   </div>
@@ -151,7 +151,7 @@ const {
   DideoData,
   HotPersongdata,
 } = storeToRefs(HomeStore);
-
+const handelTopPlayClick = (item: any) => {};
 onMounted(() => {
   HomeStore.fetchGetBannerData();
   HomeStore.fetchGetPaylistData('华语');
@@ -167,6 +167,9 @@ const handelPlayLitsiTitemCLick = (item: number) => {
 };
 const HandelNewDisClick = (item: number) => {
   router.push({ path: `/AlbumDetaile/${item}` });
+};
+const HandelSongPersongClick = () => {
+  router.push({ path: `/songpersong` });
 };
 </script>
 <style scoped lang="less">

@@ -4,9 +4,9 @@
       <div class="left">
         <div class="playstate BaseWrapper">
           <div class="this">
-            <img src="../assets/img/this.png" alt="" />
+            <img src="../assets/img/this.png" ref="ThisActiveRef" alt="" />
           </div>
-          <div class="imgbox">
+          <div class="imgbox" ref="CoVerImgBox">
             <img class="cover" src="../assets/img/disc.986e5ec6.png" alt="" />
             <div class="songpng">
               <template v-if="Songdata.al">
@@ -32,8 +32,14 @@
             </div>
           </div>
           <div class="play" @click="handelPlayClick">
-            <img src="../assets/img/PlayWhite.png" alt="" />
-            <span>立即播放</span>
+            <template v-if="IsPlayState">
+              <img src="../assets/img/Pause.png" alt="" />
+              <span>暂停播放</span>
+            </template>
+            <template v-else>
+              <img src="../assets/img/PlayWhite.png" alt="" />
+              <span>立即播放</span>
+            </template>
           </div>
         </div>
       </div>
@@ -103,7 +109,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UsePlayStore } from '@/stores/PlayStore';
 import { UseMvcommentStore } from '@/stores/MvcommentStore';
@@ -115,12 +121,16 @@ import PallistItem from './PallistItem.vue';
 import MvComment from './MvComment.vue';
 const PlayStore = UsePlayStore();
 const MvcommentStore = UseMvcommentStore();
-const { Songdata, LyricData, Songs, mvs, playlists } = storeToRefs(PlayStore);
+const { Songdata, LyricData, Songs, mvs, playlists, IsPlayState, ids } =
+  storeToRefs(PlayStore);
 const { id, CommentListData, type } = storeToRefs(MvcommentStore);
 const Router = useRoute();
 const router = useRouter();
+const CoVerImgBox = ref<HTMLDivElement>();
+const ThisActiveRef = ref<HTMLImageElement>();
 onMounted(() => {
   const Id = String(Router.params.id);
+  ids.value = Id;
   id.value = Id;
   type.value = 0;
   PlayStore.FetchgetSongdata(Id);
@@ -129,10 +139,35 @@ onMounted(() => {
   PlayStore.FetchGetsimiplaylist(Id);
   PlayStore.FetchGetsimimv(Id);
   MvcommentStore.FetchGetMvCommentListData();
+  watch(IsPlayState, (newValue, oldValue) => {
+    if (newValue === true) {
+      if (CoVerImgBox.value && ThisActiveRef.value) {
+        CoVerImgBox.value.style.animationPlayState = 'running';
+        ThisActiveRef.value.className = 'ThisActive';
+      }
+    } else {
+      if (CoVerImgBox.value && ThisActiveRef.value) {
+        CoVerImgBox.value.style.animationPlayState = 'paused';
+        ThisActiveRef.value.className = 'ThisNoneActive';
+      }
+    }
+  });
 });
 const handelPlayClick = () => {
-  console.log('点击了播放');
+  IsPlayState.value = !IsPlayState.value;
+  if (IsPlayState.value) {
+    if (CoVerImgBox.value && ThisActiveRef.value) {
+      CoVerImgBox.value.style.animationPlayState = 'running';
+      ThisActiveRef.value.className = 'ThisActive';
+    }
+  } else {
+    if (CoVerImgBox.value && ThisActiveRef.value) {
+      CoVerImgBox.value.style.animationPlayState = 'paused';
+      ThisActiveRef.value.className = 'ThisNoneActive';
+    }
+  }
 };
+
 const handelPlayLitsiTitemCLick = (item: number) => {
   router.push({ path: `/SongDetaile/${item}` });
 };
@@ -233,19 +268,32 @@ const handelSongsPlayclick = (id: any) => {
         display: flex;
         align-items: center;
         justify-content: center;
-        &:hover {
-          .this {
-            img {
-              transition: all 0.8s;
+        .ThisActive {
+          transition: all 0.8s;
+          transform: rotate(45deg);
+        }
+        .ThisNoneActive {
+          transition: all 0.8s;
+          transform: rotate(0);
+        }
 
-              transform: rotate(45deg);
-            }
-          }
-          .imgbox {
-            img {
-              z-index: 1;
-              transform: rotate(360deg);
-            }
+        &:hover {
+          // .this {
+          //   img {
+          //     transition: all 0.8s;
+          //     transform: rotate(45deg);
+          //   }
+          // }
+          // .imgbox {
+          //   img {
+          //     z-index: 1;
+          //     animation: spin 10s linear infinite running;
+          //   }
+          // }
+        }
+        @keyframes spin {
+          100% {
+            transform: rotate(360deg);
           }
         }
         .this {
@@ -264,9 +312,11 @@ const handelSongsPlayclick = (id: any) => {
           display: flex;
           justify-content: center;
           align-items: center;
+          animation: spin 10s linear infinite paused;
 
           img {
             transition: all 2.5s ease;
+            z-index: 1;
           }
           .songpng {
             display: flex;

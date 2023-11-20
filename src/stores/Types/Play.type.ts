@@ -473,4 +473,9 @@ export interface PlaySongData {
   Songs: Songs[];
   playlists: playlists[];
   mvs: mvs[];
+  IsPlayState: boolean;
+  PlayModel: number;
+  CurrentPlaySong: PlaySong;
+  CurrentPlaySongList: PlaySong[];
+  CurrentPlaySongProgress: number;
 }

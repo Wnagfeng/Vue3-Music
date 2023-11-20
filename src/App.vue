@@ -21,6 +21,9 @@
           </div>
         </div>
       </div>
+      <div class="bottom">
+        <BottomNavBarvue></BottomNavBarvue>
+      </div>
     </div>
   </template>
   <template v-else>
@@ -33,6 +36,7 @@
 import SideBar from './views/SideBar.vue';
 import LoginAndSearchVue from './components/LoginAndSearch.vue';
 import HomSvgVue from './components/HomSvg.vue';
+import BottomNavBarvue from './components/BottomNavBar.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 const Router = useRoute();
@@ -42,6 +46,7 @@ import { UseSongPersongStore } from './stores/SongPersongStore';
 import { UseMvStore } from './stores/MvStore';
 const mapStore = useSongMapStore();
 const SongPersongStore = UseSongPersongStore();
+
 const MvStore = UseMvStore();
 const { offset, limit } = storeToRefs(mapStore);
 const { MVlimit, MVoffset } = storeToRefs(MvStore);
@@ -154,6 +159,15 @@ onMounted(() => {});
     &::-webkit-scrollbar {
       display: none;
     }
+  }
+  .bottom {
+    opacity: 0.9;
+    z-index: 9999;
+    position: fixed;
+    bottom: 0;
+    height: 55px;
+    background-color: #363636;
+    width: 100%;
   }
 }
 </style>

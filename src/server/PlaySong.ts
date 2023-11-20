@@ -43,3 +43,10 @@ export function Getsimimv(mvid: string) {
     },
   });
 }
+
+// 每日推荐
+export function GetdailySongsData() {
+  return wfrequest.get({
+    url: '/recommend/songs',
+  });
+}

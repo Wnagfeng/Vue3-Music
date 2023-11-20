@@ -43,6 +43,14 @@ export const UseMvcommentStore = defineStore('MvcommentStore', {
       const id = this.id;
       const type = this.type;
       const res = await publicationComment(id, type, content, cookie);
+      if (res.message == 'Request failed with status code 512') {
+        ElMessage({
+          message: '该资源不能评论',
+          type: 'success',
+        });
+      }
+      console.log(res.message);
+
       if (res.code == 200) {
         // 发表成功后派出一个事件
         TheMvCommentEventBus.emit('PUSHCOMMENTSUCCESS');

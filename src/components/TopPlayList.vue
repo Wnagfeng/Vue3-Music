@@ -6,7 +6,7 @@
       v-for="(item, index) in $props.Itemdata.tracks.slice(0, 7)"
       :key="index"
     >
-      <div class="item">
+      <div class="item" @click="handelSongClick(item)">
         <div class="song">
           <div class="imgBaox">
             <img v-lazy="item.al.picUrl" alt="" />
@@ -21,7 +21,11 @@
           </div>
         </div>
         <div class="contrler">
-          <img src="../assets/img/AddPlylist.png" alt="" />
+          <img
+            src="../assets/img/AddPlylist.png"
+            alt=""
+            @click="HandelAddPlayListClcik($event, item)"
+          />
         </div>
       </div>
     </template>
@@ -30,7 +34,19 @@
 <script setup lang="ts">
 import type { TopPayListType } from './types/TopPalyList';
 const props = defineProps<TopPayListType>();
-
+import { useRouter } from 'vue-router';
+const Router = useRouter();
+const handelSongClick = (item: any) => {
+  // 进入歌曲详情页面
+  const Id = item.id;
+  Router.push({ path: `/PLaComponent/${Id}` });
+  console.log('点击了进入详情');
+};
+const HandelAddPlayListClcik = (e: any, item: any) => {
+  // 穿透了
+  e.stopPropagation();
+  console.log('点击了添加播放', item.id);
+};
 </script>
 <style scoped lang="less">
 .TopPlayListWrapper {
