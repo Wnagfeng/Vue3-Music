@@ -50,7 +50,56 @@
           @click="HandelPlayListClick"
           alt=""
         />
-        <div class="playListItem" ref="playListItem">1</div>
+        <div class="playListItem" ref="playListItem">
+          <div class="songList">
+            <el-table
+              :data="CurrentPlaySongList"
+              style="width: 100%"
+              @cell-click="handelCellClick"
+            >
+              <el-table-column label="序号" width="80">
+                <template v-slot="row">
+                  <!-- <div class="imgbox" @click="handelPlaySong(row)">
+                    <img src="../assets/img/Plary.png" alt="" />
+                  </div> -->
+                  <div class="index">
+                    {{ row.$index + 1 }}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="歌手" width="180" show-overflow-tooltip>
+                <template v-slot="{ row }">
+                  <template v-if="row.ar.length == 1">
+                    <span v-for="artist in row.ar" :key="artist.id">
+                      {{ artist.name }}
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span
+                      v-for="(item, index) in row.ar"
+                      :key="item.id"
+                      class="names"
+                    >
+                      {{ item.name }}
+                      <template v-if="index + 1 !== row.ar.length">
+                        /
+                      </template>
+                    </span>
+                  </template>
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="歌曲" />
+              <el-table-column prop="al.name" label="专辑" />
+              <el-table-column prop="dt" label="时长" width="100px">
+                <template v-slot="{ row }">
+                  <div class="time">
+                    {{ convertMillisecondsToMinutesAndSeconds(row.dt) }}
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -61,8 +110,11 @@ import { onMounted, reactive, ref } from 'vue';
 import { UsePlayStore } from '../stores/PlayStore';
 import { useRouter } from 'vue-router';
 import SongList from './SongList.vue';
+import { convertMillisecondsToMinutesAndSeconds } from '../utils/FormatSongTime';
+import { TheMvCommentEventBus } from '@/utils/EventBus';
 const router = useRouter();
 const ID = ref();
+
 const PlayMode = reactive([
   {
     name: '随机播放',
@@ -89,15 +141,14 @@ const {
   ids,
   CurrentPlaySongProgress,
   CurrentPlaySongList,
+  AuDioSrc,
 } = storeToRefs(PlayStore);
 onMounted(() => {
   const CurrentID = ids.value;
   ID.value = CurrentID;
   if (!CurrentID) {
-    console.log('222');
     PlayStore.fetchGetdailySongsData();
   } else {
-    console.log('111');
     PlayStore.FetchgetSongdata(CurrentID);
   }
   if (!CurrentPlaySongList.value[0]) {
@@ -115,9 +166,16 @@ const handelAfterSongClick = () => {
 };
 const handelPlaySongClick = () => {
   IsPlayState.value = !IsPlayState.value;
+  // 派出事件
+  if (IsPlayState.value) {
+    // true 播放
+    TheMvCommentEventBus.emit('play');
+  } else {
+    TheMvCommentEventBus.emit('pause');
+  }
 };
 const handelGoToSongDetaileClick = () => {
-  const id = localStorage.getItem('CurrentPlayID');
+  const id = ids.value;
   router.push({ path: `/PLaComponent/${id}` });
 };
 const handelChangePlaymodelclick = (item: any) => {
@@ -131,8 +189,16 @@ const HandelPlayListClick = () => {
     playListItem.value.classList.toggle('ShowplayListItem');
   }
 };
+
+const handelCellClick = (row: any) => {
+  const Id = row.id;
+  ids.value = row.id;
+};
 </script>
 <style scoped lang="less">
+.AudioWrapper {
+  // opacity: 0;
+}
 .BottomNavBarWrapper {
   height: 100%;
   .Main {
@@ -207,14 +273,51 @@ const HandelPlayListClick = () => {
         margin-left: 20px;
       }
       .playListItem {
+        border: 1px solid black;
+        overflow-y: auto;
+        overflow-x: hidden;
         transition: all linear 0.5s;
-        top: -315px;
+        scrollbar-width: none; /* firefox */
+        -ms-overflow-style: none; /* IE 10+ */
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        top: -314px;
         left: -650px;
         width: 700px;
         height: 300px;
         opacity: 0;
-        background-color: antiquewhite;
         position: absolute;
+
+        .songList {
+          :deep(.el-table__row) {
+            cursor: pointer;
+          }
+          :deep(.el-table__row):hover {
+            color: #f5ab17;
+            // .imgbox {
+            //   margin-left: -15px;
+            //   display: block;
+            // }
+            // .index {
+            //   display: none;
+            // }
+          }
+          .imgbox {
+            display: none;
+            width: 20px;
+            height: 20px;
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .names {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+          }
+        }
       }
       .ShowplayListItem {
         opacity: 1;

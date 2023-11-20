@@ -1,5 +1,8 @@
 <template>
   <div class="PlayComponentWrapper">
+    <div class="AudioWrapper">
+      <audio controls :src="AuDioSrc" ref="AudioRef"></audio>
+    </div>
     <div class="PlaySonginfo">
       <div class="left">
         <div class="playstate BaseWrapper">
@@ -109,7 +112,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UsePlayStore } from '@/stores/PlayStore';
 import { UseMvcommentStore } from '@/stores/MvcommentStore';
@@ -119,39 +122,119 @@ import SongList from './SongList.vue';
 import MustNewMvItem from './MustNewMvItem.vue';
 import PallistItem from './PallistItem.vue';
 import MvComment from './MvComment.vue';
+import { TheMvCommentEventBus } from '@/utils/EventBus';
 const PlayStore = UsePlayStore();
+const {
+  Songdata,
+  LyricData,
+  Songs,
+  mvs,
+  playlists,
+  IsPlayState,
+  ids,
+  CurrentPlaySongProgress,
+  AuDioSrc,
+} = storeToRefs(PlayStore);
+// --------------------------歌曲播放-----------------------------------------
+const AudioRef = ref<HTMLAudioElement | undefined>(undefined);
+const currentTime = ref(0);
+const duration = ref(0);
+const progressPercentage = () => {
+  return (currentTime.value / duration.value) * 100;
+};
+const updateProgress = () => {
+  currentTime.value = AudioRef.value?.currentTime || 0;
+  duration.value = AudioRef.value?.duration || 0;
+};
+const playAudio = () => {
+  AudioRef.value?.play();
+  updateProgress();
+};
+const pauseAudio = () => {
+  AudioRef.value?.pause();
+  updateProgress();
+};
+setInterval(function () {
+  updateProgress();
+  const res = progressPercentage();
+  CurrentPlaySongProgress.value = res;
+}, 500);
+watch(
+  [currentTime, duration],
+  ([curTime, dur]) => {
+    console.log(`当前播放进度：${curTime}/${dur}`);
+  },
+  { immediate: true },
+);
+// --------------------------------------------------------------------
 const MvcommentStore = UseMvcommentStore();
-const { Songdata, LyricData, Songs, mvs, playlists, IsPlayState, ids } =
-  storeToRefs(PlayStore);
 const { id, CommentListData, type } = storeToRefs(MvcommentStore);
 const Router = useRoute();
 const router = useRouter();
 const CoVerImgBox = ref<HTMLDivElement>();
 const ThisActiveRef = ref<HTMLImageElement>();
+watch(IsPlayState, (newValue, oldValue) => {
+  if (newValue === true) {
+    if (CoVerImgBox.value && ThisActiveRef.value) {
+      CoVerImgBox.value.style.animationPlayState = 'running';
+      ThisActiveRef.value.className = 'ThisActive';
+      playAudio();
+    }
+  } else {
+    if (CoVerImgBox.value && ThisActiveRef.value) {
+      CoVerImgBox.value.style.animationPlayState = 'paused';
+      ThisActiveRef.value.className = 'ThisNoneActive';
+      pauseAudio();
+    }
+  }
+});
+watch(ids, (newValue, oldValue) => {
+  if (CoVerImgBox.value && ThisActiveRef.value) {
+    CoVerImgBox.value.style.animationPlayState = 'paused';
+    ThisActiveRef.value.className = 'ThisNoneActive';
+  }
+  IsPlayState.value = false;
+  ids.value = newValue;
+  id.value = newValue;
+  type.value = 0;
+  PlayStore.FetchgetSongdata(newValue);
+  PlayStore.FetchgetSonglyricData(newValue);
+  PlayStore.FetchgetsimisongData(newValue);
+  PlayStore.FetchGetsimiplaylist(newValue);
+  PlayStore.FetchGetsimimv(newValue);
+  PlayStore.fetchGetCurrentPlaySrc(newValue);
+  MvcommentStore.FetchGetMvCommentListData();
+});
 onMounted(() => {
+  TheMvCommentEventBus.on('paly', () => {
+    // 此方案不太行
+    playAudio();
+  });
   const Id = String(Router.params.id);
   ids.value = Id;
   id.value = Id;
   type.value = 0;
+  CurrentPlaySongProgress.value = 0;
   PlayStore.FetchgetSongdata(Id);
   PlayStore.FetchgetSonglyricData(Id);
   PlayStore.FetchgetsimisongData(Id);
   PlayStore.FetchGetsimiplaylist(Id);
   PlayStore.FetchGetsimimv(Id);
+  PlayStore.fetchGetCurrentPlaySrc(Id);
   MvcommentStore.FetchGetMvCommentListData();
-  watch(IsPlayState, (newValue, oldValue) => {
-    if (newValue === true) {
-      if (CoVerImgBox.value && ThisActiveRef.value) {
-        CoVerImgBox.value.style.animationPlayState = 'running';
-        ThisActiveRef.value.className = 'ThisActive';
-      }
-    } else {
-      if (CoVerImgBox.value && ThisActiveRef.value) {
-        CoVerImgBox.value.style.animationPlayState = 'paused';
-        ThisActiveRef.value.className = 'ThisNoneActive';
-      }
+  if (IsPlayState.value === true) {
+    if (CoVerImgBox.value && ThisActiveRef.value) {
+      CoVerImgBox.value.style.animationPlayState = 'running';
+      ThisActiveRef.value.className = 'ThisActive';
+      playAudio();
     }
-  });
+  } else {
+    if (CoVerImgBox.value && ThisActiveRef.value) {
+      CoVerImgBox.value.style.animationPlayState = 'paused';
+      ThisActiveRef.value.className = 'ThisNoneActive';
+      pauseAudio();
+    }
+  }
 });
 const handelPlayClick = () => {
   IsPlayState.value = !IsPlayState.value;
@@ -159,11 +242,13 @@ const handelPlayClick = () => {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'running';
       ThisActiveRef.value.className = 'ThisActive';
+      playAudio();
     }
   } else {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'paused';
       ThisActiveRef.value.className = 'ThisNoneActive';
+      pauseAudio();
     }
   }
 };
@@ -188,6 +273,9 @@ const handelSongsPlayclick = (id: any) => {
   background-color: #ffffff;
 }
 .PlayComponentWrapper {
+  .AudioWrapper {
+    opacity: 0;
+  }
   background-color: #fff;
   width: 100%;
   box-sizing: border-box;

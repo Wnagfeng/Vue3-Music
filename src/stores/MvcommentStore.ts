@@ -29,7 +29,6 @@ export const UseMvcommentStore = defineStore('MvcommentStore', {
       const pageNo = this.pageNo;
       const type = this.type;
       const res = await GetMvCommentListData(id, pageNo, type);
-      console.log(res);
       // const NewData = res.data.comments;
       // const OldData = this.CommentListData;
       // const data = [...NewData, ...OldData];

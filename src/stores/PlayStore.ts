@@ -6,6 +6,7 @@ import {
   Getsimiplaylist,
   Getsimimv,
   GetdailySongsData,
+  GetCurrentPlaySrc,
 } from '@/server/PlaySong';
 import type { PlaySongData } from './Types/Play.type';
 import { parseLyric } from '../utils/PaseLyric';
@@ -22,7 +23,8 @@ export const UsePlayStore = defineStore('PlayStore', {
       PlayModel: 1, //播放模式
       CurrentPlaySong: {}, //当前播放歌曲
       CurrentPlaySongList: [], //当前播放的列表
-      CurrentPlaySongProgress: 0,
+      CurrentPlaySongProgress: 0, //播放进度
+      AuDioSrc: '',
     };
   },
   actions: {
@@ -54,7 +56,15 @@ export const UsePlayStore = defineStore('PlayStore', {
       this.CurrentPlaySong = res.data.dailySongs[0];
       const id = res.data.dailySongs[0].id;
       this.ids = id;
-      this.CurrentPlaySongList = res.data.dailySongs.slice(1, 20);
+      this.CurrentPlaySongList = res.data.dailySongs;
+    },
+    async fetchGetCurrentPlaySrc(id: string) {
+      console.log('调用了');
+
+      const res = await GetCurrentPlaySrc(id);
+      console.log(res);
+
+      this.AuDioSrc = res.data[0].url;
     },
   },
 });
