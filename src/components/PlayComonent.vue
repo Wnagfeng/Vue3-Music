@@ -1,8 +1,5 @@
 <template>
   <div class="PlayComponentWrapper">
-    <div class="AudioWrapper">
-      <audio controls :src="AuDioSrc" ref="AudioRef"></audio>
-    </div>
     <div class="PlaySonginfo">
       <div class="left">
         <div class="playstate BaseWrapper">
@@ -53,9 +50,17 @@
           </template>
         </div>
         <div class="lyic BaseWrapper">
-          <div class="LyricDataList">
-            <template v-for="item in LyricData" :key="item">
-              <div class="LyricData">
+          <div class="LyricDataList" ref="lyricContainer">
+            <template v-for="(item, index) in LyricData" :key="item">
+              <div
+                class="LyricData"
+                :class="
+                  CurrentTime > item.time &&
+                  CurrentTime < LyricData[index + 1]?.time
+                    ? 'LyricActive'
+                    : ''
+                "
+              >
                 {{ item.content }}
               </div>
             </template>
@@ -112,7 +117,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, watch, computed, onUpdated } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UsePlayStore } from '@/stores/PlayStore';
 import { UseMvcommentStore } from '@/stores/MvcommentStore';
@@ -132,59 +137,26 @@ const {
   playlists,
   IsPlayState,
   ids,
+  CurrentTime,
   CurrentPlaySongProgress,
-  AuDioSrc,
 } = storeToRefs(PlayStore);
-// --------------------------歌曲播放-----------------------------------------
-const AudioRef = ref<HTMLAudioElement | undefined>(undefined);
-const currentTime = ref(0);
-const duration = ref(0);
-const progressPercentage = () => {
-  return (currentTime.value / duration.value) * 100;
-};
-const updateProgress = () => {
-  currentTime.value = AudioRef.value?.currentTime || 0;
-  duration.value = AudioRef.value?.duration || 0;
-};
-const playAudio = () => {
-  AudioRef.value?.play();
-  updateProgress();
-};
-const pauseAudio = () => {
-  AudioRef.value?.pause();
-  updateProgress();
-};
-setInterval(function () {
-  updateProgress();
-  const res = progressPercentage();
-  CurrentPlaySongProgress.value = res;
-}, 500);
-watch(
-  [currentTime, duration],
-  ([curTime, dur]) => {
-    console.log(`当前播放进度：${curTime}/${dur}`);
-  },
-  { immediate: true },
-);
-// --------------------------------------------------------------------
 const MvcommentStore = UseMvcommentStore();
 const { id, CommentListData, type } = storeToRefs(MvcommentStore);
 const Router = useRoute();
 const router = useRouter();
 const CoVerImgBox = ref<HTMLDivElement>();
 const ThisActiveRef = ref<HTMLImageElement>();
+const lyricContainer = ref<HTMLDivElement>();
 watch(IsPlayState, (newValue, oldValue) => {
   if (newValue === true) {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'running';
       ThisActiveRef.value.className = 'ThisActive';
-      playAudio();
     }
   } else {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'paused';
       ThisActiveRef.value.className = 'ThisNoneActive';
-      pauseAudio();
     }
   }
 });
@@ -193,7 +165,7 @@ watch(ids, (newValue, oldValue) => {
     CoVerImgBox.value.style.animationPlayState = 'paused';
     ThisActiveRef.value.className = 'ThisNoneActive';
   }
-  IsPlayState.value = false;
+  // IsPlayState.value = false;
   ids.value = newValue;
   id.value = newValue;
   type.value = 0;
@@ -205,34 +177,25 @@ watch(ids, (newValue, oldValue) => {
   PlayStore.fetchGetCurrentPlaySrc(newValue);
   MvcommentStore.FetchGetMvCommentListData();
 });
+
 onMounted(() => {
-  TheMvCommentEventBus.on('paly', () => {
-    // 此方案不太行
-    playAudio();
-  });
   const Id = String(Router.params.id);
   ids.value = Id;
-  id.value = Id;
-  type.value = 0;
-  CurrentPlaySongProgress.value = 0;
   PlayStore.FetchgetSongdata(Id);
   PlayStore.FetchgetSonglyricData(Id);
   PlayStore.FetchgetsimisongData(Id);
   PlayStore.FetchGetsimiplaylist(Id);
   PlayStore.FetchGetsimimv(Id);
-  PlayStore.fetchGetCurrentPlaySrc(Id);
   MvcommentStore.FetchGetMvCommentListData();
   if (IsPlayState.value === true) {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'running';
       ThisActiveRef.value.className = 'ThisActive';
-      playAudio();
     }
   } else {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'paused';
       ThisActiveRef.value.className = 'ThisNoneActive';
-      pauseAudio();
     }
   }
 });
@@ -242,30 +205,50 @@ const handelPlayClick = () => {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'running';
       ThisActiveRef.value.className = 'ThisActive';
-      playAudio();
     }
   } else {
     if (CoVerImgBox.value && ThisActiveRef.value) {
       CoVerImgBox.value.style.animationPlayState = 'paused';
       ThisActiveRef.value.className = 'ThisNoneActive';
-      pauseAudio();
     }
   }
 };
-
 const handelPlayLitsiTitemCLick = (item: number) => {
   router.push({ path: `/SongDetaile/${item}` });
 };
 const handelSongsPlayclick = (id: any) => {
   const Id = id;
+  IsPlayState.value = false;
+  ids.value = Id;
+  id.value = Id;
+  type.value = 0;
   PlayStore.FetchgetSongdata(Id);
   PlayStore.FetchgetSonglyricData(Id);
   PlayStore.FetchgetsimisongData(Id);
   PlayStore.FetchGetsimiplaylist(Id);
   PlayStore.FetchGetsimimv(Id);
+  PlayStore.fetchGetCurrentPlaySrc(Id);
+};
+onUpdated(() => {
+  scrollLyric();
+});
+const scrollLyric = () => {
+  const container = lyricContainer.value;
+  if (!container) return;
+  const activeLyric = container.querySelector('.LyricActive');
+  if (activeLyric) {
+    const containerHeight = container.offsetHeight; // 父容器的高度
+    const activeLyricTop = activeLyric.offsetTop; // 当前活动歌词的顶部位置
+    const offset = activeLyricTop - containerHeight / 2; // 额外的偏移量，以便让当前歌词垂直居中
+    container.scrollTop = offset - 29; // 设置滚动条位置，减去 29 像素即可向上滚动
+  }
 };
 </script>
 <style scoped lang="less">
+.LyricActive {
+  transform: scale(1.2);
+  color: #ff6700;
+}
 .BaseWrapper {
   border-radius: 13px;
   box-sizing: border-box;
@@ -320,6 +303,7 @@ const handelSongsPlayclick = (id: any) => {
         scrollbar-width: none; /* firefox */
         -ms-overflow-style: none; /* IE 10+ */
         transition: width 0.3s ease;
+        transition: 0.5s;
         &::-webkit-scrollbar {
           display: none;
         }

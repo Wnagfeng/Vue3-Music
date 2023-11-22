@@ -1,6 +1,9 @@
 <template>
   <div class="BottomNavBarWrapper">
     <div class="Main">
+      <div class="AudioWrapper">
+        <audio controls :src="AuDioSrc" ref="AudioRef"></audio>
+      </div>
       <div class="control">
         <div class="BeforSong" @click="handelBeforSongClick">
           <img src="../assets/img/Song/BeforSong.png" alt="" />
@@ -27,7 +30,10 @@
           </div>
           <div class="slider">
             <div class="slider-demo-block">
-              <el-slider v-model="CurrentPlaySongProgress" />
+              <el-slider
+                v-model="CurrentPlaySongProgress"
+                @change="handelChangeSliderClick"
+              />
             </div>
           </div>
         </div>
@@ -59,9 +65,6 @@
             >
               <el-table-column label="序号" width="80">
                 <template v-slot="row">
-                  <!-- <div class="imgbox" @click="handelPlaySong(row)">
-                    <img src="../assets/img/Plary.png" alt="" />
-                  </div> -->
                   <div class="index">
                     {{ row.$index + 1 }}
                   </div>
@@ -106,15 +109,39 @@
 </template>
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { UsePlayStore } from '../stores/PlayStore';
 import { useRouter } from 'vue-router';
 import SongList from './SongList.vue';
 import { convertMillisecondsToMinutesAndSeconds } from '../utils/FormatSongTime';
 import { TheMvCommentEventBus } from '@/utils/EventBus';
 const router = useRouter();
-const ID = ref();
+// --------------------------歌曲播放-----------------------------------------
+const AudioRef = ref<HTMLAudioElement | undefined>(undefined);
+const currentTime = ref(0);
+const duration = ref(0);
+const progressPercentage = () => {
+  return (currentTime.value / duration.value) * 100;
+};
+const updateProgress = () => {
+  currentTime.value = AudioRef.value?.currentTime || 0;
+  duration.value = AudioRef.value?.duration || 0;
+};
+const playAudio = () => {
+  AudioRef.value?.play();
+  updateProgress();
+};
+const pauseAudio = () => {
+  AudioRef.value?.pause();
+  updateProgress();
+};
+setInterval(function () {
+  updateProgress();
+  const res = progressPercentage();
+  CurrentPlaySongProgress.value = res;
+}, 500);
 
+// --------------------------------------------------------------------
 const PlayMode = reactive([
   {
     name: '随机播放',
@@ -135,17 +162,24 @@ const PlayMode = reactive([
 const PlayStore = UsePlayStore();
 const {
   IsPlayState,
-  Songdata,
   PlayModel,
   CurrentPlaySong,
   ids,
   CurrentPlaySongProgress,
   CurrentPlaySongList,
+  CurrentTime,
   AuDioSrc,
 } = storeToRefs(PlayStore);
+watch(
+  [currentTime, duration],
+  ([curTime, dur]) => {
+    CurrentTime.value = curTime * 1000;
+    console.log(`当前播放进度：${curTime}/${dur}`);
+  },
+  { immediate: true },
+);
 onMounted(() => {
-  const CurrentID = ids.value;
-  ID.value = CurrentID;
+  let CurrentID = ids.value;
   if (!CurrentID) {
     PlayStore.fetchGetdailySongsData();
   } else {
@@ -153,10 +187,20 @@ onMounted(() => {
   }
   if (!CurrentPlaySongList.value[0]) {
     PlayStore.fetchGetdailySongsData();
+  }
+  if (IsPlayState.value === true) {
+    playAudio();
   } else {
+    pauseAudio();
   }
 });
-const value1 = ref(10);
+watch(IsPlayState, (newValue, oldValue) => {
+  if (newValue === true) {
+    playAudio();
+  } else {
+    pauseAudio();
+  }
+});
 const playListItem = ref<HTMLDivElement>();
 const handelBeforSongClick = () => {
   console.log('上一首');
@@ -166,13 +210,6 @@ const handelAfterSongClick = () => {
 };
 const handelPlaySongClick = () => {
   IsPlayState.value = !IsPlayState.value;
-  // 派出事件
-  if (IsPlayState.value) {
-    // true 播放
-    TheMvCommentEventBus.emit('play');
-  } else {
-    TheMvCommentEventBus.emit('pause');
-  }
 };
 const handelGoToSongDetaileClick = () => {
   const id = ids.value;
@@ -191,17 +228,25 @@ const HandelPlayListClick = () => {
 };
 
 const handelCellClick = (row: any) => {
+  CurrentPlaySongProgress.value = 0;
+  AuDioSrc.value = '';
   const Id = row.id;
+  IsPlayState.value = false;
+  PlayStore.fetchGetCurrentPlaySrc(Id);
+  PlayStore.FetchgetSongdata(Id);
   ids.value = row.id;
+};
+const handelChangeSliderClick = (e: any) => {
 };
 </script>
 <style scoped lang="less">
-.AudioWrapper {
-  // opacity: 0;
-}
 .BottomNavBarWrapper {
   height: 100%;
   .Main {
+    .AudioWrapper {
+      position: absolute;
+      opacity: 0;
+    }
     height: 100%;
     display: flex;
     margin: 0 auto;
@@ -295,13 +340,6 @@ const handelCellClick = (row: any) => {
           }
           :deep(.el-table__row):hover {
             color: #f5ab17;
-            // .imgbox {
-            //   margin-left: -15px;
-            //   display: block;
-            // }
-            // .index {
-            //   display: none;
-            // }
           }
           .imgbox {
             display: none;

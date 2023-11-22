@@ -25,6 +25,7 @@ export const UsePlayStore = defineStore('PlayStore', {
       CurrentPlaySongList: [], //当前播放的列表
       CurrentPlaySongProgress: 0, //播放进度
       AuDioSrc: '',
+      CurrentTime:0
     };
   },
   actions: {
@@ -56,15 +57,16 @@ export const UsePlayStore = defineStore('PlayStore', {
       this.CurrentPlaySong = res.data.dailySongs[0];
       const id = res.data.dailySongs[0].id;
       this.ids = id;
+      if (res.code == 200) {
+        this.fetchGetCurrentPlaySrc(id);
+      }
       this.CurrentPlaySongList = res.data.dailySongs;
     },
     async fetchGetCurrentPlaySrc(id: string) {
-      console.log('调用了');
-
       const res = await GetCurrentPlaySrc(id);
       console.log(res);
-
       this.AuDioSrc = res.data[0].url;
     },
+    changePlaySong(id: any) {},
   },
 });

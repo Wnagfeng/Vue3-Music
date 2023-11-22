@@ -479,4 +479,5 @@ export interface PlaySongData {
   CurrentPlaySongList: PlaySong[];
   CurrentPlaySongProgress: number;
   AuDioSrc: string;
+  CurrentTime: number;
 }
