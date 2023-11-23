@@ -49,17 +49,17 @@
             <img v-lazy="Songdata.al.picUrl" alt="" />
           </template>
         </div>
-        <div class="lyic BaseWrapper">
-          <div class="LyricDataList" ref="lyricContainer">
+        <div class="lyic BaseWrapper" ref="lyricContainer">
+          <div class="LyricDataList">
             <template v-for="(item, index) in LyricData" :key="item">
               <div
                 class="LyricData"
-                :class="
+                :class="[
                   CurrentTime > item.time &&
                   CurrentTime < LyricData[index + 1]?.time
                     ? 'LyricActive'
-                    : ''
-                "
+                    : '',
+                ]"
               >
                 {{ item.content }}
               </div>
@@ -174,7 +174,6 @@ watch(ids, (newValue, oldValue) => {
   PlayStore.FetchgetsimisongData(newValue);
   PlayStore.FetchGetsimiplaylist(newValue);
   PlayStore.FetchGetsimimv(newValue);
-  PlayStore.fetchGetCurrentPlaySrc(newValue);
   MvcommentStore.FetchGetMvCommentListData();
 });
 
@@ -227,7 +226,6 @@ const handelSongsPlayclick = (id: any) => {
   PlayStore.FetchgetsimisongData(Id);
   PlayStore.FetchGetsimiplaylist(Id);
   PlayStore.FetchGetsimimv(Id);
-  PlayStore.fetchGetCurrentPlaySrc(Id);
 };
 onUpdated(() => {
   scrollLyric();
@@ -236,17 +234,26 @@ const scrollLyric = () => {
   const container = lyricContainer.value;
   if (!container) return;
   const activeLyric = container.querySelector('.LyricActive');
+
   if (activeLyric) {
     const containerHeight = container.offsetHeight; // 父容器的高度
+
     const activeLyricTop = activeLyric.offsetTop; // 当前活动歌词的顶部位置
+
     const offset = activeLyricTop - containerHeight / 2; // 额外的偏移量，以便让当前歌词垂直居中
-    container.scrollTop = offset - 29; // 设置滚动条位置，减去 29 像素即可向上滚动
+    const top = offset - 29;
+    console.log(offset);
+    container.scroll({
+      top,
+      behavior: 'smooth', // 开启滚动动画
+    });
+    // container.scrollTop = top; // 设置滚动条位置，减去 29 像素即可向上滚动
   }
 };
 </script>
 <style scoped lang="less">
 .LyricActive {
-  transform: scale(1.2);
+  transform: scale(1.5);
   color: #ff6700;
 }
 .BaseWrapper {
@@ -297,13 +304,13 @@ const scrollLyric = () => {
         padding: 20px;
         height: 679px;
         box-sizing: border-box;
-        overflow-y: auto;
         overflow-x: hidden;
         overflow-y: auto;
         scrollbar-width: none; /* firefox */
         -ms-overflow-style: none; /* IE 10+ */
         transition: width 0.3s ease;
-        transition: 0.5s;
+        transition: scroll-behavior 0.2s ease-out;
+
         &::-webkit-scrollbar {
           display: none;
         }
@@ -316,6 +323,7 @@ const scrollLyric = () => {
           text-align: center;
           .LyricData {
             margin-top: 20px;
+            transition: all 0.5s ease-out;
           }
         }
       }

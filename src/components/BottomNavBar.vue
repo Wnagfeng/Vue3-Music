@@ -2,7 +2,7 @@
   <div class="BottomNavBarWrapper">
     <div class="Main">
       <div class="AudioWrapper">
-        <audio controls :src="AuDioSrc" ref="AudioRef"></audio>
+        <audio controls :src="SongUrl" ref="AudioRef"></audio>
       </div>
       <div class="control">
         <div class="BeforSong" @click="handelBeforSongClick">
@@ -31,8 +31,11 @@
           <div class="slider">
             <div class="slider-demo-block">
               <el-slider
+                :show-tooltip="false"
+                :tooltip-class="'hidden-tooltip'"
                 v-model="CurrentPlaySongProgress"
                 @change="handelChangeSliderClick"
+                @change-end="handleChangeEnd"
               />
             </div>
           </div>
@@ -120,6 +123,7 @@ const router = useRouter();
 const AudioRef = ref<HTMLAudioElement | undefined>(undefined);
 const currentTime = ref(0);
 const duration = ref(0);
+const isPushSlider = ref(false);
 const progressPercentage = () => {
   return (currentTime.value / duration.value) * 100;
 };
@@ -135,10 +139,18 @@ const pauseAudio = () => {
   AudioRef.value?.pause();
   updateProgress();
 };
-setInterval(function () {
+const HandelSetprogressPercentage = () => {
   updateProgress();
   const res = progressPercentage();
   CurrentPlaySongProgress.value = res;
+};
+
+setInterval(function () {
+  if (isPushSlider.value) {
+    console.log('拖动中');
+  } else {
+    HandelSetprogressPercentage();
+  }
 }, 500);
 
 // --------------------------------------------------------------------
@@ -169,7 +181,9 @@ const {
   CurrentPlaySongList,
   CurrentTime,
   AuDioSrc,
+  SongUrl,
 } = storeToRefs(PlayStore);
+
 watch(
   [currentTime, duration],
   ([curTime, dur]) => {
@@ -232,11 +246,20 @@ const handelCellClick = (row: any) => {
   AuDioSrc.value = '';
   const Id = row.id;
   IsPlayState.value = false;
-  PlayStore.fetchGetCurrentPlaySrc(Id);
-  PlayStore.FetchgetSongdata(Id);
   ids.value = row.id;
+  PlayStore.FetchgetSongdata(Id);
+};
+const handleChangeEnd = (value: any) => {
+  console.log('松开了：' + value);
 };
 const handelChangeSliderClick = (e: any) => {
+  isPushSlider.value = false;
+  const res1 = e / 100;
+  const res2 = duration.value;
+  const res = res2 * res1;
+  if (!AudioRef.value) return;
+  AudioRef.value.currentTime = res;
+  CurrentPlaySongProgress.value = e;
 };
 </script>
 <style scoped lang="less">

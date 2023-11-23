@@ -1,4 +1,5 @@
 import wfrequest from '.';
+import wfrequestV1 from './indexV2';
 export function getSongdata(ids: string) {
   return wfrequest.get({
     url: '/song/detail',
@@ -52,12 +53,4 @@ export function GetdailySongsData() {
 }
 
 // 获取都SongSrc
-export function GetCurrentPlaySrc(id: string) {
-  return wfrequest.get({
-    url: '/song/url/v1',
-    params: {
-      id,
-      level: 'jymaster',
-    },
-  });
-}
+

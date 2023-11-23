@@ -6,7 +6,6 @@ import {
   Getsimiplaylist,
   Getsimimv,
   GetdailySongsData,
-  GetCurrentPlaySrc,
 } from '@/server/PlaySong';
 import type { PlaySongData } from './Types/Play.type';
 import { parseLyric } from '../utils/PaseLyric';
@@ -25,7 +24,9 @@ export const UsePlayStore = defineStore('PlayStore', {
       CurrentPlaySongList: [], //当前播放的列表
       CurrentPlaySongProgress: 0, //播放进度
       AuDioSrc: '',
-      CurrentTime:0
+      CurrentTime: 0, //当前播放时间
+      duration: 0, //当前音乐的总时长
+      SongUrl: '',
     };
   },
   actions: {
@@ -33,6 +34,8 @@ export const UsePlayStore = defineStore('PlayStore', {
       const res = await getSongdata(ids);
       this.Songdata = res.songs[0];
       this.CurrentPlaySong = res.songs[0];
+      this.SongUrl =
+        'http://music.163.com/song/media/outer/url?id=' + ids + '.mp3';
     },
     async FetchgetSonglyricData(id: string) {
       const res = await getSonglyricData(id);
@@ -57,15 +60,9 @@ export const UsePlayStore = defineStore('PlayStore', {
       this.CurrentPlaySong = res.data.dailySongs[0];
       const id = res.data.dailySongs[0].id;
       this.ids = id;
-      if (res.code == 200) {
-        this.fetchGetCurrentPlaySrc(id);
-      }
+      this.SongUrl =
+        'http://music.163.com/song/media/outer/url?id=' + this.ids + '.mp3';
       this.CurrentPlaySongList = res.data.dailySongs;
-    },
-    async fetchGetCurrentPlaySrc(id: string) {
-      const res = await GetCurrentPlaySrc(id);
-      console.log(res);
-      this.AuDioSrc = res.data[0].url;
     },
     changePlaySong(id: any) {},
   },
