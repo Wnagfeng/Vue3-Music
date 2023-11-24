@@ -4,9 +4,18 @@
       <div class="left">
         <div class="playstate BaseWrapper">
           <div class="this">
-            <img src="../assets/img/this.png" ref="ThisActiveRef" alt="" />
+            <img
+              src="../assets/img/this.png"
+              ref="ThisActiveRef"
+              alt=""
+              :class="[IsPlayState ? 'ThisActive' : 'ThisNoneActive']"
+            />
           </div>
-          <div class="imgbox" ref="CoVerImgBox">
+          <div
+            class="imgbox"
+            ref="CoVerImgBox"
+            :class="[IsPlayState ? 'PlayAnimation' : 'PauseAnimation']"
+          >
             <img class="cover" src="../assets/img/disc.986e5ec6.png" alt="" />
             <div class="songpng">
               <template v-if="Songdata.al">
@@ -138,7 +147,6 @@ const {
   IsPlayState,
   ids,
   CurrentTime,
-  CurrentPlaySongProgress,
 } = storeToRefs(PlayStore);
 const MvcommentStore = UseMvcommentStore();
 const { id, CommentListData, type } = storeToRefs(MvcommentStore);
@@ -147,33 +155,11 @@ const router = useRouter();
 const CoVerImgBox = ref<HTMLDivElement>();
 const ThisActiveRef = ref<HTMLImageElement>();
 const lyricContainer = ref<HTMLDivElement>();
-watch(IsPlayState, (newValue, oldValue) => {
-  if (newValue === true) {
-    if (CoVerImgBox.value && ThisActiveRef.value) {
-      CoVerImgBox.value.style.animationPlayState = 'running';
-      ThisActiveRef.value.className = 'ThisActive';
-    }
-  } else {
-    if (CoVerImgBox.value && ThisActiveRef.value) {
-      CoVerImgBox.value.style.animationPlayState = 'paused';
-      ThisActiveRef.value.className = 'ThisNoneActive';
-    }
-  }
-});
 watch(ids, (newValue, oldValue) => {
-  if (CoVerImgBox.value && ThisActiveRef.value) {
-    CoVerImgBox.value.style.animationPlayState = 'paused';
-    ThisActiveRef.value.className = 'ThisNoneActive';
-  }
-  // IsPlayState.value = false;
   ids.value = newValue;
   id.value = newValue;
   type.value = 0;
   PlayStore.FetchgetSongdata(newValue);
-  PlayStore.FetchgetSonglyricData(newValue);
-  PlayStore.FetchgetsimisongData(newValue);
-  PlayStore.FetchGetsimiplaylist(newValue);
-  PlayStore.FetchGetsimimv(newValue);
   MvcommentStore.FetchGetMvCommentListData();
 });
 
@@ -181,36 +167,10 @@ onMounted(() => {
   const Id = String(Router.params.id);
   ids.value = Id;
   PlayStore.FetchgetSongdata(Id);
-  PlayStore.FetchgetSonglyricData(Id);
-  PlayStore.FetchgetsimisongData(Id);
-  PlayStore.FetchGetsimiplaylist(Id);
-  PlayStore.FetchGetsimimv(Id);
   MvcommentStore.FetchGetMvCommentListData();
-  if (IsPlayState.value === true) {
-    if (CoVerImgBox.value && ThisActiveRef.value) {
-      CoVerImgBox.value.style.animationPlayState = 'running';
-      ThisActiveRef.value.className = 'ThisActive';
-    }
-  } else {
-    if (CoVerImgBox.value && ThisActiveRef.value) {
-      CoVerImgBox.value.style.animationPlayState = 'paused';
-      ThisActiveRef.value.className = 'ThisNoneActive';
-    }
-  }
 });
 const handelPlayClick = () => {
   IsPlayState.value = !IsPlayState.value;
-  if (IsPlayState.value) {
-    if (CoVerImgBox.value && ThisActiveRef.value) {
-      CoVerImgBox.value.style.animationPlayState = 'running';
-      ThisActiveRef.value.className = 'ThisActive';
-    }
-  } else {
-    if (CoVerImgBox.value && ThisActiveRef.value) {
-      CoVerImgBox.value.style.animationPlayState = 'paused';
-      ThisActiveRef.value.className = 'ThisNoneActive';
-    }
-  }
 };
 const handelPlayLitsiTitemCLick = (item: number) => {
   router.push({ path: `/SongDetaile/${item}` });
@@ -222,10 +182,6 @@ const handelSongsPlayclick = (id: any) => {
   id.value = Id;
   type.value = 0;
   PlayStore.FetchgetSongdata(Id);
-  PlayStore.FetchgetSonglyricData(Id);
-  PlayStore.FetchgetsimisongData(Id);
-  PlayStore.FetchGetsimiplaylist(Id);
-  PlayStore.FetchGetsimimv(Id);
 };
 onUpdated(() => {
   scrollLyric();
@@ -237,21 +193,23 @@ const scrollLyric = () => {
 
   if (activeLyric) {
     const containerHeight = container.offsetHeight; // 父容器的高度
-
     const activeLyricTop = activeLyric.offsetTop; // 当前活动歌词的顶部位置
-
     const offset = activeLyricTop - containerHeight / 2; // 额外的偏移量，以便让当前歌词垂直居中
     const top = offset - 29;
-    console.log(offset);
     container.scroll({
       top,
       behavior: 'smooth', // 开启滚动动画
     });
-    // container.scrollTop = top; // 设置滚动条位置，减去 29 像素即可向上滚动
   }
 };
 </script>
 <style scoped lang="less">
+.PlayAnimation {
+  animation: spin 10s linear infinite running !important;
+}
+.PauseAnimation {
+  animation: spin 10s linear infinite paused !important;
+}
 .LyricActive {
   transform: scale(1.5);
   color: #ff6700;
@@ -538,3 +496,5 @@ const scrollLyric = () => {
   }
 }
 </style>
+<!-- 不够五百 -->
+<!-- 不够五百 -->

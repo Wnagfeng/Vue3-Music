@@ -11,16 +11,12 @@
         <div class="left">
           <div class="img">
             <img class="PlaryImg" src="../assets/img/Plary.png" alt="" />
-            <span>播放全部</span>
+            <span @click="handelPlayAllSong">播放全部</span>
           </div>
         </div>
       </div>
       <div class="songList">
-        <el-table
-          :data="props.Itemdata"
-          style="width: 100%"
-          @cell-click="handelCellClick"
-        >
+        <el-table :data="props.Itemdata" style="width: 100%">
           <el-table-column label="序号" width="80">
             <template v-slot="row">
               <div class="imgbox" @click="handelPlaySong(row)">
@@ -77,20 +73,33 @@ import type { Track } from './types/SongList';
 import { useRouter } from 'vue-router';
 import { convertMillisecondsToMinutesAndSeconds } from '../utils/FormatSongTime';
 import Loading from '@/components/Loading.vue';
+import { UsePlayStore } from '@/stores/PlayStore';
+import { storeToRefs } from 'pinia';
+const PlayStore = UsePlayStore();
+const { ids, CurrentPlaySongList, IsPlayState } = storeToRefs(PlayStore);
 const Router = useRouter();
 const props = defineProps<Track>();
 const handelPlaySong = (data: any) => {
   // 直接播放不跳转
   const Id = data.row.id;
-  Router.push({ path: `/PLaComponent/${Id}` });
+  ids.value = Id;
+  PlayStore.FetchgetSongdata(Id);
+  console.log(Id);
+  // Router.push({ path: `/PLaComponent/${Id}` });
 };
 const handelAddSongList = (data: any) => {
-  console.log('点击了加入播放', data);
+  const Id = data.id;
+  PlayStore.FetchGetAddSongListData(Id);
 };
 const handelCellClick = (row: any) => {
-  // 进入歌曲详情不播放
   const Id = row.id;
   Router.push({ path: `/PLaComponent/${Id}` });
+};
+
+const handelPlayAllSong = () => {
+  CurrentPlaySongList.value = props.Itemdata;
+  const id = props.Itemdata[0].id;
+  PlayStore.FetchgetSongdata(id);
 };
 </script>
 <style scoped lang="less">

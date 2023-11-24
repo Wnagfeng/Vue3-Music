@@ -48,8 +48,6 @@ export const UseMvcommentStore = defineStore('MvcommentStore', {
           type: 'success',
         });
       }
-      console.log(res.message);
-
       if (res.code == 200) {
         // 发表成功后派出一个事件
         TheMvCommentEventBus.emit('PUSHCOMMENTSUCCESS');

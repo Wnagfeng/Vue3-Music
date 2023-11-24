@@ -1,3 +1,4 @@
+import type { Track } from '@/components/types/SongList';
 export interface Ar {
   id: number;
   name: string;
@@ -476,10 +477,11 @@ export interface PlaySongData {
   IsPlayState: boolean;
   PlayModel: number;
   CurrentPlaySong: PlaySong;
-  CurrentPlaySongList: PlaySong[];
+  CurrentPlaySongList: PlaySong[] | Track[];
   CurrentPlaySongProgress: number;
   AuDioSrc: string;
   CurrentTime: number;
   duration: number;
   SongUrl: string;
+  CurrentPlaySongIndex: number;
 }

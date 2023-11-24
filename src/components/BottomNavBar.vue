@@ -2,7 +2,7 @@
   <div class="BottomNavBarWrapper">
     <div class="Main">
       <div class="AudioWrapper">
-        <audio controls :src="SongUrl" ref="AudioRef"></audio>
+        <audio controls :src="SongUrl" autoplay ref="AudioRef"></audio>
       </div>
       <div class="control">
         <div class="BeforSong" @click="handelBeforSongClick">
@@ -65,6 +65,8 @@
               :data="CurrentPlaySongList"
               style="width: 100%"
               @cell-click="handelCellClick"
+              class="nihao"
+              :row-class-name="getRowClassName"
             >
               <el-table-column label="序号" width="80">
                 <template v-slot="row">
@@ -147,7 +149,6 @@ const HandelSetprogressPercentage = () => {
 
 setInterval(function () {
   if (isPushSlider.value) {
-    console.log('拖动中');
   } else {
     HandelSetprogressPercentage();
   }
@@ -182,13 +183,13 @@ const {
   CurrentTime,
   AuDioSrc,
   SongUrl,
+  CurrentPlaySongIndex,
 } = storeToRefs(PlayStore);
 
 watch(
   [currentTime, duration],
   ([curTime, dur]) => {
     CurrentTime.value = curTime * 1000;
-    console.log(`当前播放进度：${curTime}/${dur}`);
   },
   { immediate: true },
 );
@@ -207,6 +208,32 @@ onMounted(() => {
   } else {
     pauseAudio();
   }
+  if (AudioRef.value) {
+    AudioRef.value.addEventListener('play', function () {
+      IsPlayState.value = true;
+    });
+    AudioRef.value.addEventListener('pause', function () {
+      IsPlayState.value = false;
+    });
+    AudioRef.value.addEventListener('ended', function () {
+      if (PlayModel.value == 1) {
+        const max = CurrentPlaySongList.value.length;
+        const min = 0;
+        const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+        CurrentPlaySongIndex.value = randomNumber;
+        // 随机播放模式
+      } else if (PlayModel.value == 2) {
+        CurrentPlaySongIndex.value = CurrentPlaySongIndex.value;
+        playAudio();
+      } else if (PlayModel.value == 3) {
+        CurrentPlaySongIndex.value++;
+      }
+      const id = String(
+        CurrentPlaySongList.value[CurrentPlaySongIndex.value].id,
+      );
+      PlayStore.FetchgetSongdata(id);
+    });
+  }
 });
 watch(IsPlayState, (newValue, oldValue) => {
   if (newValue === true) {
@@ -217,10 +244,22 @@ watch(IsPlayState, (newValue, oldValue) => {
 });
 const playListItem = ref<HTMLDivElement>();
 const handelBeforSongClick = () => {
-  console.log('上一首');
+  if (CurrentPlaySongIndex.value <= 0) {
+    CurrentPlaySongIndex.value = CurrentPlaySongList.value.length - 1;
+  } else {
+    CurrentPlaySongIndex.value--;
+  }
+  const id = String(CurrentPlaySongList.value[CurrentPlaySongIndex.value].id);
+  PlayStore.FetchgetSongdata(id);
 };
 const handelAfterSongClick = () => {
-  console.log('下一首');
+  if (CurrentPlaySongIndex.value >= CurrentPlaySongList.value.length - 1) {
+    CurrentPlaySongIndex.value = 0;
+  } else {
+    CurrentPlaySongIndex.value++;
+  }
+  const id = String(CurrentPlaySongList.value[CurrentPlaySongIndex.value].id);
+  PlayStore.FetchgetSongdata(id);
 };
 const handelPlaySongClick = () => {
   IsPlayState.value = !IsPlayState.value;
@@ -260,6 +299,13 @@ const handelChangeSliderClick = (e: any) => {
   if (!AudioRef.value) return;
   AudioRef.value.currentTime = res;
   CurrentPlaySongProgress.value = e;
+};
+
+const getRowClassName = (row: any) => {
+  const inddex = row.rowIndex;
+  if (inddex == CurrentPlaySongIndex.value) {
+    return 'RowActive';
+  }
 };
 </script>
 <style scoped lang="less">
@@ -361,6 +407,10 @@ const handelChangeSliderClick = (e: any) => {
           :deep(.el-table__row) {
             cursor: pointer;
           }
+          :deep(.RowActive) {
+            color: #f5ab17 !important;
+          }
+
           :deep(.el-table__row):hover {
             color: #f5ab17;
           }

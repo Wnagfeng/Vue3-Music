@@ -28,11 +28,5 @@
     "path": "/songpersong",
     "iconpath": "SongPersong.png",
     "selectpath": "SongPersongActive.png"
-  },
-  {
-    "name": "我的音乐",
-    "path": "/mymusic",
-    "iconpath": "MyMusic.png",
-    "selectpath": "MyMusicActive.png"
   }
 ]
